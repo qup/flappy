@@ -365,18 +365,28 @@ var Game = (function() {
       context.setTransform(1, 0, 0, 1, 0, 0);
       context.font = '20pt Arial';
       context.textAlign = 'center';
-      context.fillText(this.score.toString(), this.canvas.width / 2, this.canvas.height / 8);
+      context.fillText(this.score.toString(), context.canvas.width / 2, context.canvas.height / 8);
    };
 
    Game.prototype.tick = function(time) {
+      var accumulator = 0;
       var previousTime = 0;
 
+      // integrate at 120 steps per second.
+      var dt = 1 / 120;
+
       var callback = function(time) {
-         var deltaTime = (time - previousTime) / 1000;
+         var frameTime = (time - previousTime) / 1000;
          previousTime = time;
 
-         this.step(deltaTime);
-         this.draw(deltaTime);
+         accumulator += frameTime;
+
+         while ( accumulator >= dt ) {
+            accumulator -= dt;
+            this.step(dt);
+         }
+
+         this.draw(frameTime);
 
          window.requestAnimationFrame(callback.bind(this));
       };
