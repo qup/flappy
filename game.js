@@ -315,7 +315,7 @@ var Game = (function() {
 
       // Top wont have terrain. clamp it.
       if (this.bird.y > this.canvas.height - (this.bird.radius * 2)) {
-         this.bird.velocity.y = 0;
+         this.bird.velocity.y = -100;
       }
 
       // check terrain intersection
