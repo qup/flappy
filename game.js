@@ -191,12 +191,9 @@ var Terrain = (function() {
                var x = i * this.cellSize;
                var y = j * this.cellSize;
 
-               var radius = this.cellSize / 2;
-               var theta = radius + obj.radius;
-
                var distance = Math.sqrt((x -= obj.x) * x + (y -= obj.y) * y);
 
-               if (distance < theta) {
+               if (distance < (this.cellSize / 2) + obj.radius) {
 
                   //this.cells[this.indexAt(i, j)] = -1;
                   console.log('intersecting (%i, %i)', i, j);
