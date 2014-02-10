@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html>
+   <body>
+      <style>
+         html, body{
+            border: 0;
+            margin: 0;
+            padding: 0;
+
+            max-width:100%;
+            max-height:100%;
+            overflow:hidden;
+         }
+
+         canvas {
+            padding: 0;
+            margin: 0;
+         }
+      </style>
+      <script src='util.js' type='application/javascript'></script>
+      <script src='math.js' type='application/javascript'></script>
+      <script src='event.js' type='application/javascript'></script>
+      <script src='tile.js' type='application/javascript'></script>
+      <script src='sprite.js' type='application/javascript'></script>
+      <script src='game.js' type='application/javascript'></script>
+
+      <script type='application/javascript'>
+         var game = new Game(document.body);
+      </script>
+   </body>
+</html>
