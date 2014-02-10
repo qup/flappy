@@ -363,7 +363,7 @@ var Game = (function() {
 
       // Draw the score
       context.setTransform(1, 0, 0, 1, 0, 0);
-      context.font = '20pt Arial';
+      context.font = '32px munro';
       context.textAlign = 'center';
       context.fillText(this.score.toString(), context.canvas.width / 2, context.canvas.height / 8);
    };
