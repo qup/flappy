@@ -336,7 +336,7 @@ var Game = (function() {
 
    Game.prototype.startGame = function() {
       this.state = 'play';
-      this.bird.flap();
+      this.input.flapping = true;
    };
 
    Game.prototype.endGame = function() {
