@@ -14,6 +14,7 @@ var TileSheet = (function() {
       this._margin = 0;
       this._columns = 0;
       this._rows = 0;
+      this._src = '';
       this._complete = true;
 
       EventDispatcher.call(this);

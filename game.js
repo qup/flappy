@@ -220,7 +220,11 @@ var Game = (function() {
    var input;
 
    var tileSheet;
-   var spritSheet;
+
+   var spriteSheet;
+   var spriteAnimationName;
+   var spriteAnimationFrame;
+   var spriteAnimationTime;
 
    function Game(parent) {
       this.canvas = this.createCanvas(parent);
@@ -272,14 +276,23 @@ var Game = (function() {
       this.tileSheet = new TileSheet();
       assets++;
 
+      this.spriteSheet = new SpriteSheet();
+      assets++;
+
       var that = this;
-      this.tileSheet.addEventListener('load', function() {
+      var callback = function(event) {
          if (--assets == 0) {
             that.prepareGame();
          }
-      });
 
-      this.tileSheet.src = '/tilesheets/basic.json';
+         console.log('Loaded asset, remaining %i', assets);
+      };
+
+      this.tileSheet.addEventListener('load', callback);
+      this.spriteSheet.addEventListener('load', callback);
+
+      this.tileSheet.src = 'tilesheets/tiles.json';
+      this.spriteSheet.src = 'spritesheets/sprite.json';
    };
 
    Game.prototype.prepareGame = function() {
@@ -362,10 +375,35 @@ var Game = (function() {
       // Draw the map.
       context.drawTiles(this.tileSheet, this.terrain.cells, this.terrain.columns, this.terrain.rows);
 
-      // Draw the player
-      context.circle(this.bird.x, this.bird.y, this.bird.radius);
-      context.fillStyle = 'cornflowerblue';
-      context.fill();
+      // Animate and draw the player.
+      var animationName = this.spriteAnimationName;
+      if (this.bird.dead) {
+         this.spriteAnimationName = 'dead';
+      } else if (this.bird.velocity.y > 0) {
+         this.spriteAnimationName = 'flap';
+      } else {
+         this.spriteAnimationName = 'idle';
+      }
+
+      if (animationName != this.spriteAnimationName) {
+         this.spriteAnimationFrame = 0;
+         this.spriteAnimationFrame = 0;
+      }
+
+      this.spriteAnimationTime += dt;
+      if (this.spriteAnimationTime > 0.05) {
+         this.spriteAnimationFrame++;
+         this.spriteAnimationTime = 0;
+
+         if (this.spriteAnimationFrame >= this.spriteSheet.animations[this.spriteAnimationName].length) {
+            this.spriteAnimationFrame = 0;
+         }
+      }
+
+      var animation = this.spriteSheet.animations[this.spriteAnimationName];
+      var index = animation[this.spriteAnimationFrame];
+
+      context.drawSprite(this.spriteSheet, index, this.bird.x, this.bird.y, 70, 32);
 
       // Draw the score
       context.setTransform(1, 0, 0, 1, 0, 0);

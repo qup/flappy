@@ -9,7 +9,7 @@ var SpriteSheet = (function () {
       this._image = new Image();
       this._frames = [];
       this._animations = [];
-      this._src = [];
+      this._src = '';
       this._complete = true;
 
       EventDispatcher.call(this);
@@ -19,7 +19,7 @@ var SpriteSheet = (function () {
    SpriteSheet.prototype = Object.create(EventDispatcher.prototype);
    SpriteSheet.constructor = SpriteSheet;
 
-   Object.defineProperty(TileSheet.prototype, 'image', {
+   Object.defineProperty(SpriteSheet.prototype, 'image', {
       get: function () {
          return this._image;
       },
@@ -27,7 +27,7 @@ var SpriteSheet = (function () {
       configurable: true
    });
 
-   Object.defineProperty(TileSheet.prototype, 'src', {
+   Object.defineProperty(SpriteSheet.prototype, 'src', {
       get: function () {
          return this._src;
       },
@@ -78,12 +78,22 @@ var SpriteSheet = (function () {
    });
 
    return SpriteSheet;
-});
+})();
 
 (function() {
    CanvasRenderingContext2D.prototype.drawSprite = function(spriteSheet, index, dx, dy, dw, dh) {
-      var tile = spriteSheet.frames[index];
+      var frame = spriteSheet.frames[index];
 
-      this.drawImage(tileSheet.image, frame.left, frame.top, frame.top + frame.bottom, frame.left + frame.right, dx, dy, dw, dh);
+      this.scale(1, -1);
+      var sx = frame.left;
+      var sy = frame.top;
+      var sw = frame.right - frame.left;
+      var sh = frame.bottom - frame.top;
+
+      dx -= dw / 2;
+      dy -= dy * 2;
+      dy -= dh / 2;
+
+      this.drawImage(spriteSheet.image, sx, sy, sw, sh, dx, dy, dw, dh);
    };
 })();
