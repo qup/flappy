@@ -4,7 +4,7 @@ var EventDispatcher = (function() {
    }
 
    EventDispatcher.prototype.addEventListener = function(type, callback) {
-      this.events[type] = this.events[event] || [];
+      this.events[type] = this.events[type] || [];
 
       if ( this.events[type] ) {
          this.events[type].push(callback);
