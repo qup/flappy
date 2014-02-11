@@ -89,7 +89,7 @@ var Terrain = (function() {
       // 1-9 is terrain (each tile facing a direction as on a numpad, e.g 8 would be a tile with the grassy part on the top.
       //
       // generate obstacles.
-      for (var i = 10; i < this.columns; i++) {
+      for (var i = 16; i < this.columns; i++) {
 
          // Min/max obstacle gap range.
          var distance = 6;
@@ -284,7 +284,7 @@ var Game = (function() {
       var cellSize = 32;
 
       this.score = 0;
-      this.bird = new Bird(cellSize, this.canvas.height / 2, 16);
+      this.bird = new Bird(this.canvas.width / 2, this.canvas.height / 2, 16);
 
       this.terrain = new Terrain((this.canvas.width / cellSize) * 60, (this.canvas.height / cellSize), cellSize);
    };
