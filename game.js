@@ -299,47 +299,38 @@ var Game = (function() {
    };
 
    Game.prototype.step = function(dt) {
-      if (this.state != 'play') {
-         return;
+      if (this.state == 'play') {
+         if (this.input.flapping) {
+            this.bird.flap();
+            this.input.flapping = false;
+         }
       }
 
-      // Get the type of the bird is over, before updating it.
-      // this allows to check what type of cell the bird was over,
-      // used to scoring.
-      var block = this.terrain.queryAt(this.bird.x, this.bird.y);
-      var position = this.bird.position.clone();
+      if (this.state == 'play' || this.state == 'end') {
+         var block = this.terrain.queryAt(this.bird.x, this.bird.y);
+         var position = this.bird.position.clone();
 
-      // Flap the bird.
-      if (this.input.flapping) {
-         this.bird.flap();
-         this.input.flapping = false;
-      }
+         this.bird.step(dt);
 
-      // Step the simulation.
-      this.bird.step(dt);
+         if (this.bird.y > this.canvas.height - (this.bird.radius * 2)) {
+            this.bird.velocity.y = -100;
+         }
 
-      // Top wont have terrain. clamp it.
-      if (this.bird.y > this.canvas.height - (this.bird.radius * 2)) {
-         this.bird.velocity.y = -100;
-      }
+         if (this.terrain.intersects(this.bird)) {
+            this.bird.die();
 
-      // check terrain intersection
-      if (this.terrain.intersects(this.bird)) {
-         this.bird.velocity.x = 0;
-         this.bird.velocity.y = 0;
-         this.bird.position = position;
-         this.bird.die();
+            this.bird.velocity.x = 0;
+            this.bird.velocity.y = 0;
+            this.bird.position = position;
 
-         var that = this;
-         window.setTimeout(function() {
+            var that = this;
             that.endGame();
-         }, 200);
-      } else if (this.terrain.queryAt(this.bird.x, this.bird.y) != block && block == 0) {
-         // If the bird has moved to a new kind of block, and the block was an air block.
-         // we can know that the bird has passed through one or more air blocks.
-
-         this.score++;
+         } else if (this.terrain.queryAt(this.bird.x, this.bird.y) != block && block == 0) {
+            this.score++;
+         }
       }
+
+
    };
 
    Game.prototype.draw = function(dt) {
