@@ -84,7 +84,6 @@ var SpriteSheet = (function () {
    CanvasRenderingContext2D.prototype.drawSprite = function(spriteSheet, index, dx, dy, dw, dh) {
       var frame = spriteSheet.frames[index];
 
-      this.scale(1, -1);
       var sx = frame.left;
       var sy = frame.top;
       var sw = frame.right - frame.left;

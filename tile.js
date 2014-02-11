@@ -127,7 +127,7 @@ var TileSheet = (function() {
             var sx = (i % (tileSheet.image.width / tileWidth)) * tileWidth;
             var sy = Math.floor(i / (tileSheet.image.width / tileWidth)) * tileHeight;
 
-            this.drawImage(tileSheet.image, sx, sy, tileWidth, tileHeight, (x * tileWidth) - (tileWidth / 2), (y * tileHeight) - tileHeight / 2, tileWidth, tileHeight );
+            this.drawImage(tileSheet.image, sx, sy, tileWidth, tileHeight, (x * tileWidth) - (tileWidth / 2), -(y * tileHeight) - tileHeight / 2, tileWidth, tileHeight );
          }
       }
    };
