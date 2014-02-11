@@ -214,6 +214,8 @@ var Game = (function() {
    var bird;
    var terrain;
    var score;
+   var highscore;
+
    var state;
    var input;
 
@@ -222,6 +224,8 @@ var Game = (function() {
 
    function Game(parent) {
       this.canvas = this.createCanvas(parent);
+      this.highscore = window.localStorage.getItem('highscore') || 0;
+
       this.input = {
          flapping: false,
       };
@@ -296,6 +300,12 @@ var Game = (function() {
 
    Game.prototype.endGame = function() {
       this.state = 'end';
+
+      if (this.score > this.highscore) {
+         this.highscore = this.score;
+
+         window.localStorage.setItem('highscore', this.highscore);
+      }
    };
 
    Game.prototype.step = function(dt) {
@@ -367,7 +377,24 @@ var Game = (function() {
       } else if (this.state == 'start') {
          context.fillText('Tap to start', context.canvas.width / 2, context.canvas.height / 8);
       } else if(this.state == 'end') {
+         context.textAlign = 'center';
+
+         context.font = '36px munro';
          context.fillText('Game Over', context.canvas.width / 2, context.canvas.height / 8);
+
+         var top = context.canvas.height / 4;
+
+         context.font = '24px munro';
+         context.fillText('Score', context.canvas.width / 2, top);
+         top += 24;
+
+         context.fillText(this.score.toString(), context.canvas.width / 2, top);
+         top += 34;
+
+         context.fillText('Best', context.canvas.width / 2, top);
+         top += 24;
+
+         context.fillText(this.highscore.toString(), context.canvas.width / 2, top);
       }
    };
 
