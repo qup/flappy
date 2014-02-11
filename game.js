@@ -226,6 +226,8 @@ var Game = (function() {
    var spriteAnimationFrame;
    var spriteAnimationTime;
 
+   var backgroundImage;
+
    function Game(parent) {
       this.canvas = this.createCanvas(parent);
       this.highscore = window.localStorage.getItem('highscore') || 0;
@@ -279,6 +281,9 @@ var Game = (function() {
       this.spriteSheet = new SpriteSheet();
       assets++;
 
+      this.backgroundImage = new Image();
+      assets++;
+
       var that = this;
       var callback = function(event) {
          if (--assets == 0) {
@@ -290,9 +295,11 @@ var Game = (function() {
 
       this.tileSheet.addEventListener('load', callback);
       this.spriteSheet.addEventListener('load', callback);
+      this.backgroundImage.addEventListener('load', callback);
 
       this.tileSheet.src = 'tilesheets/tiles.json';
       this.spriteSheet.src = 'spritesheets/sprite.json';
+      this.backgroundImage.src = 'images/background.png';
    };
 
    Game.prototype.prepareGame = function() {
@@ -368,6 +375,9 @@ var Game = (function() {
 
          return;
       }
+
+      // Draw the background
+      context.drawImage(this.backgroundImage, 0, 0, this.backgroundImage.width, this.backgroundImage.height, 0, 0, context.canvas.width, context.canvas.height);
 
       context.translate(Math.floor((context.canvas.width / 4) - this.bird.x), Math.floor(context.canvas.height) - this.terrain.cellSize / 2);
       context.scale(1, -1);
