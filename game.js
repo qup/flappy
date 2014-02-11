@@ -397,7 +397,7 @@ var Game = (function() {
 
       if (animationName != this.spriteAnimationName) {
          this.spriteAnimationFrame = 0;
-         this.spriteAnimationFrame = 0;
+         this.spriteAnimationTime = 0;
       }
 
       this.spriteAnimationTime += dt;
