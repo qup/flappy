@@ -249,9 +249,11 @@ var Game = (function() {
    Game.prototype.handleEvent = function(event) {
 
       if (event.type == 'mousedown' || event.type == 'keydown' || event.type == 'touchstart') {
-         if (this.state == 'pause') {
-            this.playGame();
-         } else {
+         if (this.state == 'start') {
+            this.startGame();
+         } else if (this.state == 'end') {
+            this.prepareGame();
+         } else if (this.state == 'play') {
             this.input.flapping = true;
          }
       }
@@ -269,28 +271,31 @@ var Game = (function() {
       var that = this;
       this.tileSheet.addEventListener('load', function() {
          if (--assets == 0) {
-            that.startGame();
+            that.prepareGame();
          }
       });
 
       this.tileSheet.src = '/tilesheets/basic.json';
    };
 
-   Game.prototype.startGame = function() {
-      //this.state = 'pause';
-      this.playGame();
-   };
+   Game.prototype.prepareGame = function() {
+      this.state = 'start';
 
-   Game.prototype.playGame = function() {
       var cellSize = 32;
 
       this.score = 0;
       this.bird = new Bird(cellSize, this.canvas.height / 2, 16);
-      this.bird.flap();
 
       this.terrain = new Terrain((this.canvas.width / cellSize) * 60, (this.canvas.height / cellSize), cellSize);
+   };
 
+   Game.prototype.startGame = function() {
       this.state = 'play';
+      this.bird.flap();
+   };
+
+   Game.prototype.endGame = function() {
+      this.state = 'end';
    };
 
    Game.prototype.step = function(dt) {
@@ -327,7 +332,7 @@ var Game = (function() {
 
          var that = this;
          window.setTimeout(function() {
-            that.playGame();
+            that.endGame();
          }, 200);
       } else if (this.terrain.queryAt(this.bird.x, this.bird.y) != block && block == 0) {
          // If the bird has moved to a new kind of block, and the block was an air block.
@@ -365,7 +370,14 @@ var Game = (function() {
       context.setTransform(1, 0, 0, 1, 0, 0);
       context.font = '32px munro';
       context.textAlign = 'center';
-      context.fillText(this.score.toString(), context.canvas.width / 2, context.canvas.height / 8);
+
+      if (this.state == 'play') {
+         context.fillText(this.score.toString(), context.canvas.width / 2, context.canvas.height / 8);
+      } else if (this.state == 'start') {
+         context.fillText('Tap to start', context.canvas.width / 2, context.canvas.height / 8);
+      } else if(this.state == 'end') {
+         context.fillText('Game Over', context.canvas.width / 2, context.canvas.height / 8);
+      }
    };
 
    Game.prototype.tick = function(time) {
