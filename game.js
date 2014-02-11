@@ -82,79 +82,73 @@ var Terrain = (function() {
          }
       }
 
-      // NOTE;
-      // some simple assumptions are made about the tileset used to render
-      // the terrain.
-      // 0 is air.
-      // 1-9 is terrain (each tile facing a direction as on a numpad, e.g 8 would be a tile with the grassy part on the top.
-      //
-      // generate obstacles.
-      for (var i = 16; i < this.columns; i++) {
+      this.generate(20, this.columns);
 
-         // Min/max obstacle gap range.
-         var distance = 6;
-         var min = Math.floor(Math.random() * (this.rows - distance));
-         var max = min + distance;
+   }
 
-         // iterate each column of the obstacle.
-         columns = Math.floor(Math.random() * (6 - 2 + 1)) + 2;
-         for (var j = i; j < (i + columns) && j < this.columns; j++) {
+   Terrain.prototype.generate = function(i, length) {
 
-            // iterate each row of the obstacle.
-            for (var k = 0; k < this.rows; k++) {
-               var value;
+      while(i < length) {
+         var width = Math.floor(Math.random() * (6 - 2 + 1)) + 2;
+         this.generateObstacle(i, i + width, 6);
 
-               // if it falls within the gap distance, it is an 'air' cell.
-               if (k > min && k < max) {
-                  value = 0;
-               } else {
-                  // otherwise, it is some sort of solid tile, determine which.
-                  // default to center block.
-                  value = 5;
-
-                  // check for edges
-                  if (j == i) {
-                     // left edge
-                     value = 4;
-
-                     // top 6
-                     if (k == min) {
-                        value = 7;
-                     } else if (k == max) {
-                        value = 9;
-                     }
-                  } else if(j == (i + columns - 1)) {
-                     value = 6;
-
-                     if (k == min) {
-                        value = 1;
-                     } else if(k == max) {
-                        value = 3;
-                     }
-                  } else {
-                     if (k == min) {
-                        value = 8;
-                     } else if(k == max) {
-                        value = 2;
-                     }
-
-                  }
-               }
-
-               this.cells[k * this.columns + j] = value;
-            }
-         }
-
-         // position the next obstacle
-         var seperation = Math.floor(Math.random() * (6 - 3 + 1)) + 3;
-         i = (j - 1) + seperation;
+         var seperation = Math.floor(Math.random() * (8 - 4 + 1)) + 4;
+         i += width + seperation;
       }
 
-      // fill the bottom row with ground cells.
-      for (var i = 0; i < this.columns; i++) {
+      for (i = 0; i < length; i++) {
          this.cells[0 * this.columns + i] = 8;
       }
    }
+
+
+   Terrain.prototype.generateObstacle = function(start, end, distance) {
+      var min = Math.floor(Math.random() * (this.rows - distance));
+      var max = min + distance;
+
+      for (var col = start; col < end + 1; col++) {
+         for (var row = 0; row < this.rows; row++) {
+            var value;
+
+            // if it falls within the gap distance, it is an 'air' cell.
+            if (row > min && row < max) {
+               value = 0;
+            } else {
+               // otherwise, it is some sort of solid tile, determine which.
+               // default to center block.
+               value = 5;
+
+               // check for edges
+               if (col == start) {
+                  // left edge
+                  value = 4;
+
+                  if (row == min) {
+                     value = 7;
+                  } else if (row == max) {
+                     value = 1;
+                  }
+               } else if(col == end) {
+                  value = 6;
+
+                  if (row == min) {
+                     value = 9;
+                  } else if(row == max) {
+                     value = 3;
+                  }
+               } else {
+                  if (row == min) {
+                     value = 8;
+                  } else if(row == max) {
+                     value = 2;
+                  }
+               }
+            }
+
+            this.cells[row * this.columns + col] = value;
+         }
+      }
+   };
 
    // Returns the value at the given world coordiantes.
    //
