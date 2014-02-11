@@ -381,8 +381,7 @@ var Game = (function() {
             this.bird.flap();
             this.input.flapping = false;
 
-            this.flapSound.load();
-            this.flapSound.play();
+            this.flapSound.cloneNode().play();
          }
       }
 
@@ -399,8 +398,7 @@ var Game = (function() {
          if (this.terrain.intersects(this.bird)) {
             if (!this.bird.dead) {
                this.bird.die();
-               this.deathSound.load();
-               this.deathSound.play();
+               this.deathSound.cloneNode().play();
             }
 
             this.bird.position = position.clone();
@@ -408,8 +406,7 @@ var Game = (function() {
             var that = this;
             that.endGame();
          } else if (this.terrain.queryAt(this.bird.x, this.bird.y) != block && block == 0) {
-            this.scoreSound.load();
-            this.scoreSound.play();
+            this.scoreSound.cloneNode().play();
             this.score++;
          }
       }
