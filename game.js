@@ -507,9 +507,10 @@ var Game = (function() {
       // integrate at 120 steps per second.
       var dt = 1 / 120;
 
-      var callback = function(time) {
-         var frameTime = (time - previousTime) / 1000;
-         previousTime = time;
+      var callback = function(timestamp) {
+         var currentTime = (timestamp / 1000);
+         var frameTime = (currentTime - previousTime);
+         previousTime = currentTime;
 
          accumulator += frameTime;
 
