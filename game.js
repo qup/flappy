@@ -228,6 +228,10 @@ var Game = (function() {
 
    var backgroundImage;
 
+   var flapSound;
+   var deathSound;
+   var scoreSound;
+
    function Game(parent) {
       this.canvas = this.createCanvas(parent);
       this.highscore = window.localStorage.getItem('highscore') || 0;
@@ -284,6 +288,15 @@ var Game = (function() {
       this.backgroundImage = new Image();
       assets++;
 
+      this.flapSound = new Audio();
+      assets++;
+
+      this.deathSound = new Audio();
+      assets++;
+
+      this.scoreSound = new Audio();
+      assets++;
+
       var that = this;
       var callback = function(event) {
          if (--assets == 0) {
@@ -297,9 +310,17 @@ var Game = (function() {
       this.spriteSheet.addEventListener('load', callback);
       this.backgroundImage.addEventListener('load', callback);
 
+      this.flapSound.addEventListener('loadeddata', callback);
+      this.deathSound.addEventListener('loadeddata', callback);
+      this.scoreSound.addEventListener('loadeddata', callback);
+
       this.tileSheet.src = 'tilesheets/tiles.json';
       this.spriteSheet.src = 'spritesheets/sprite.json';
       this.backgroundImage.src = 'images/background.png';
+
+      this.flapSound.src = 'sounds/flap.wav';
+      this.deathSound.src = 'sounds/death.wav';
+      this.scoreSound.src = 'sounds/score.wav';
    };
 
    Game.prototype.prepareGame = function() {
@@ -333,6 +354,9 @@ var Game = (function() {
          if (this.input.flapping) {
             this.bird.flap();
             this.input.flapping = false;
+
+            this.flapSound.load();
+            this.flapSound.play();
          }
       }
 
@@ -347,7 +371,11 @@ var Game = (function() {
          }
 
          if (this.terrain.intersects(this.bird)) {
-            this.bird.die();
+            if (!this.bird.dead) {
+               this.bird.die();
+               this.deathSound.load();
+               this.deathSound.play();
+            }
 
             this.bird.velocity.x = 0;
             this.bird.velocity.y = 0;
@@ -356,6 +384,8 @@ var Game = (function() {
             var that = this;
             that.endGame();
          } else if (this.terrain.queryAt(this.bird.x, this.bird.y) != block && block == 0) {
+            this.scoreSound.load();
+            this.scoreSound.play();
             this.score++;
          }
       }
