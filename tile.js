@@ -113,15 +113,12 @@ var TileSheet = (function() {
 })();
 
 (function() {
-   CanvasRenderingContext2D.prototype.drawTiles = function(tileSheet, data, columns, rows) {
+   CanvasRenderingContext2D.prototype.drawTiles = function(tileSheet, data, columns, x1, y1, x2, y2) {
       var tileWidth = tileSheet.image.width / tileSheet.columns;
       var tileHeight = tileSheet.image.height / tileSheet.rows;
 
-      // FIXME; this should be left up to the client...
-      this.save();
-      this.scale(1, -1);
-      for (var x = 0; x < columns; x++) {
-         for (var y = 0; y < rows; y++) {
+      for (var x = x1; x < x2; x++) {
+         for (var y = y1; y < y2; y++) {
             var i = data[(y * columns) + x];
             if (i < 0) {
                continue;
@@ -130,9 +127,8 @@ var TileSheet = (function() {
             var sx = (i % (tileSheet.image.width / tileWidth)) * tileWidth;
             var sy = Math.floor(i / (tileSheet.image.width / tileWidth)) * tileHeight;
 
-            this.drawImage(tileSheet.image, sx, sy, tileWidth, tileHeight, (x * tileWidth) - (tileWidth / 2), -(y * tileHeight) - tileHeight / 2, tileWidth, tileHeight );
+            this.drawImage(tileSheet.image, sx, sy, tileWidth, tileHeight, (x * tileWidth) - (tileWidth / 2), (y * tileHeight) - tileHeight / 2, tileWidth, tileHeight );
          }
       }
-      this.restore();
    };
 })();

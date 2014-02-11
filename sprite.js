@@ -91,7 +91,6 @@ var SpriteSheet = (function () {
       var sh = frame.bottom - frame.top;
 
       dx -= dw / 2;
-      dy -= dy * 2;
       dy -= dh / 2;
 
       this.drawImage(spriteSheet.image, sx, sy, sw, sh, dx, dy, dw, dh);

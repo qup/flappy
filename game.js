@@ -434,7 +434,11 @@ var Game = (function() {
       context.scale(1, -1);
 
       // Draw the map.
-      context.drawTiles(this.tileSheet, this.terrain.cells, this.terrain.columns, this.terrain.rows);
+      // start and end indices based on where the camera is looking at.
+      var start = Math.max(0, Math.floor((this.bird.x / this.terrain.cellSize) - (context.canvas.width / 4) / this.terrain.cellSize));
+      var end = Math.min(this.terrain.columns, start + (this.canvas.width / this.terrain.cellSize) * 2);
+
+      context.drawTiles(this.tileSheet, this.terrain.cells, this.terrain.columns, start, 0, end, this.terrain.rows);
 
       // Animate and draw the player.
       var animationName = this.spriteAnimationName;
@@ -464,7 +468,7 @@ var Game = (function() {
       var animation = this.spriteSheet.animations[this.spriteAnimationName];
       var index = animation[this.spriteAnimationFrame];
 
-      context.drawSprite(this.spriteSheet, index, this.bird.x, this.bird.y, 70, 32);
+      context.drawSprite(this.spriteSheet, index, this.bird.x, -this.bird.y, 70, 32);
 
       // Draw the score
       context.setTransform(1, 0, 0, 1, 0, 0);
