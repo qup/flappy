@@ -32,10 +32,4 @@
       CanvasRenderingContext2D.prototype.circle || function(x, y, radius) {
       this.arc(x, y, radius, 0, 2 * Math.PI, false);
    };
-
-   var Random = {};
-
-   Random.range = function(min, max) {
-      return Math.random() * (max - min) + min;
-   };
 })();
