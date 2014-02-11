@@ -60,6 +60,7 @@ var Bird = (function() {
       }
 
       this.dead = true;
+      this.velocity.x = 0;
    };
 
    return Bird;
@@ -377,9 +378,7 @@ var Game = (function() {
                this.deathSound.play();
             }
 
-            this.bird.velocity.x = 0;
-            this.bird.velocity.y = 0;
-            this.bird.position = position;
+            this.bird.position = position.clone();
 
             var that = this;
             that.endGame();
