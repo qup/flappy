@@ -49,7 +49,6 @@ var Bird = (function() {
          return;
       }
 
-      console.log('flap');
       this.velocity.y = 450;
       this.velocity.x = 150;
    };
@@ -197,7 +196,6 @@ var Terrain = (function() {
                if (distance < (this.cellSize / 2) + obj.radius) {
 
                   //this.cells[this.indexAt(i, j)] = -1;
-                  console.log('intersecting (%i, %i)', i, j);
                   return true;
                }
             }
