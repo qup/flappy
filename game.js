@@ -478,6 +478,7 @@ var Game = (function() {
       } else if(this.state == 'end') {
          context.textAlign = 'center';
 
+         context.fillStyle = 'black';
          context.font = '36px munro';
          context.fillText('Game Over', context.canvas.width / 2, context.canvas.height / 8);
 
