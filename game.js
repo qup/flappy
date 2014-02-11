@@ -278,50 +278,75 @@ var Game = (function() {
 
    Game.prototype.preload = function() {
       this.state = 'preload';
-      var assets = 0;
 
-      this.tileSheet = new TileSheet();
-      assets++;
 
-      this.spriteSheet = new SpriteSheet();
-      assets++;
-
-      this.backgroundImage = new Image();
-      assets++;
-
-      this.flapSound = new Audio();
-      assets++;
-
-      this.deathSound = new Audio();
-      assets++;
-
-      this.scoreSound = new Audio();
-      assets++;
+      var filesLoaded = 0;
+      var filesTotal = 0;
 
       var that = this;
-      var callback = function(event) {
-         if (--assets == 0) {
+      var loadCallback = function(event) {
+         filesLoaded++;
+
+         if (filesLoaded >= filesTotal) {
             that.prepareGame();
          }
-
-         console.log('Loaded asset, remaining %i', assets);
+         console.log('loaded file, %i remaining', filesTotal - filesLoaded);
       };
 
-      this.tileSheet.addEventListener('load', callback);
-      this.spriteSheet.addEventListener('load', callback);
-      this.backgroundImage.addEventListener('load', callback);
+      var loadTileSheet = function(uri) {
+         var tileSheet = new TileSheet();
 
-      this.flapSound.addEventListener('loadeddata', callback);
-      this.deathSound.addEventListener('loadeddata', callback);
-      this.scoreSound.addEventListener('loadeddata', callback);
+         tileSheet.addEventListener('load', loadCallback, false);
+         tileSheet.src = uri;
 
-      this.tileSheet.src = 'tilesheets/tiles.json';
-      this.spriteSheet.src = 'spritesheets/sprite.json';
-      this.backgroundImage.src = 'images/background.png';
+         return tileSheet;
+      };
 
-      this.flapSound.src = 'sounds/flap.wav';
-      this.deathSound.src = 'sounds/death.wav';
-      this.scoreSound.src = 'sounds/score.wav';
+      var loadSpriteSheet = function(uri) {
+         var spriteSheet = new SpriteSheet();
+
+         spriteSheet.addEventListener('load', loadCallback, false);
+         spriteSheet.src = uri;
+
+
+         return spriteSheet;
+      };
+
+      var loadImage = function(uri) {
+         var image = new Image();
+
+         image.addEventListener('load', loadCallback, false);
+         image.src = uri;
+
+         return image;
+      };
+
+      var loadAudio = function(uri) {
+         var audio = new Audio();
+
+         audio.addEventListener('canplaythrough', loadCallback, false);
+         audio.addEventListener('ended', function() {
+            console.log('resetting time');
+            this.currentTime = 0;
+            console.log(this);
+         });
+
+         audio.preload = true;
+         audio.loop = true;
+         audio.src = uri;
+
+         return audio;
+      };
+
+      filesTotal = 6;
+
+      this.tileSheet = loadTileSheet('tilesheets/tiles.json');
+      this.spriteSheet = loadSpriteSheet('spritesheets/sprite.json');
+      this.backgroundImage = loadImage('images/background.png');
+
+      this.flapSound = loadAudio('sounds/flap.wav');
+      this.deathSound = loadAudio('sounds/death.wav');
+      this.scoreSound = loadAudio('sounds/score.wav');
    };
 
    Game.prototype.prepareGame = function() {
