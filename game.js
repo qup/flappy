@@ -422,10 +422,10 @@ var Game = (function() {
 
       // Draw the map.
       // start and end indices based on where the camera is looking at.
-      var start = Math.max(0, Math.floor((this.bird.x / this.terrain.cellSize) - (context.canvas.width / 4) / this.terrain.cellSize));
-      var end = Math.min(this.terrain.columns, start + (this.canvas.width / this.terrain.cellSize) * 2);
+      var offset = Math.floor(this.bird.x / this.terrain.cellSize);
+      var count = Math.floor(this.canvas.width / this.terrain.cellSize);
 
-      context.drawTiles(this.tileSheet, this.terrain.cells, this.terrain.columns, start, 0, end, this.terrain.rows);
+      context.drawTiles(this.tileSheet, this.terrain.cells, this.terrain.columns, this.terrain.rows, offset - count, 0, offset + count, this.terrain.rows);
 
       // Animate and draw the player.
       var animationName = this.spriteAnimationName;

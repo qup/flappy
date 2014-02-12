@@ -113,13 +113,17 @@ var TileSheet = (function() {
 })();
 
 (function() {
-   CanvasRenderingContext2D.prototype.drawTiles = function(tileSheet, data, columns, x1, y1, x2, y2) {
+   CanvasRenderingContext2D.prototype.drawTiles = function(tileSheet, data, columns, rows, startX, startY, endX, endY) {
       var tileWidth = tileSheet.image.width / tileSheet.columns;
       var tileHeight = tileSheet.image.height / tileSheet.rows;
 
-      for (var x = x1; x < x2; x++) {
-         for (var y = y1; y < y2; y++) {
-            var i = data[(y * columns) + x];
+      for (var x = startX; x < endX; x++) {
+         for (var y = startY; y < endY; y++) {
+            var col = (x < 0) ? columns + x : x % columns;
+            var row = (y < 0) ? rows + y : y % rows;
+
+            var i = data[row * columns + col];
+
             if (i < 0) {
                continue;
             }
