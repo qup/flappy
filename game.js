@@ -70,43 +70,46 @@ var Terrain = (function() {
    var cells;
    var cellSize;
 
-   function Terrain(columns, rows, cellSize) {
+   function Terrain(columns, rows, cellSize, bleed) {
       this.rows = rows;
       this.columns = columns;
       this.cellSize = cellSize;
       this.cells = new Array(rows * columns);
 
-      for (var column = 0; column < this.columns; column++) {
-         for (var row = 0; row < this.rows; row++) {
-            this.cells[row * this.columns + column] = -1;
-         }
-      }
-
-      this.generate(20, this.columns);
-
+      this.fill(0, 0, this.columns, this.rows, -1);
+      this.fill(0, 0, this.columns, 1, 8);
+      this.generate(bleed, this.columns);
    }
 
    Terrain.prototype.generate = function(i, length) {
-
       while(i < length) {
          var width = Math.floor(Math.random() * (6 - 2 + 1)) + 2;
+
+         while (i + width > this.columns) {
+            width--;
+         }
+
          this.generateObstacle(i, i + width, 6);
+
 
          var seperation = Math.floor(Math.random() * (8 - 4 + 1)) + 4;
          i += width + seperation;
       }
-
-      for (i = 0; i < length; i++) {
-         this.cells[0 * this.columns + i] = 8;
-      }
    }
 
+   Terrain.prototype.fill = function(x, y, width, height, value) {
+      for (var col = x; col < width; col++) {
+         for (var row = y; row < height; row++) {
+            this.cells[row * this.columns + col] = value;
+         }
+      }
+   };
 
    Terrain.prototype.generateObstacle = function(start, end, distance) {
       var min = Math.floor(Math.random() * (this.rows - distance));
       var max = min + distance;
 
-      for (var col = start; col < end + 1; col++) {
+      for (var col = start; (col < end) && (col < this.columns); col++) {
          for (var row = 0; row < this.rows; row++) {
             var value;
 
@@ -342,7 +345,7 @@ var Game = (function() {
       this.score = 0;
       this.bird = new Bird(this.canvas.width / 2, this.canvas.height / 2, 16);
 
-      this.terrain = new Terrain((this.canvas.width / cellSize) * 60, (this.canvas.height / cellSize), cellSize);
+      this.terrain = new Terrain((this.canvas.width / cellSize) * 24, (this.canvas.height / cellSize), cellSize, Math.floor(this.canvas.width / cellSize) * 1.5, 10);
    };
 
    Game.prototype.startGame = function() {
