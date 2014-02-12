@@ -427,7 +427,10 @@ var Game = (function() {
       // Draw the background
       context.drawImage(this.backgroundImage, 0, 0, this.backgroundImage.width, this.backgroundImage.height, 0, 0, context.canvas.width, context.canvas.height);
 
-      context.translate(Math.floor((context.canvas.width / 4) - this.bird.x), Math.floor(context.canvas.height) - this.terrain.cellSize / 2);
+      context.translate(Math.floor(-this.bird.x), context.canvas.height);
+      context.translate(0, -this.terrain.cellSize / 2);
+
+      context.translate( 75, 0);
 
       // Draw the map.
       // start and end indices based on where the camera is looking at.
