@@ -77,7 +77,7 @@ var Terrain = (function() {
       this.cells = new Array(rows * columns);
 
       this.fill(0, 0, this.columns, this.rows, -1);
-      this.fill(0, 0, this.columns, 1, 8);
+      this.fill(0, 0, this.columns, 1, 12);
       this.generate(bleed, this.columns);
    }
 
@@ -119,31 +119,38 @@ var Terrain = (function() {
             } else {
                // otherwise, it is some sort of solid tile, determine which.
                // default to center block.
-               value = 5;
+               value = 6;
 
                // check for edges
                if (col == start) {
                   // left edge
-                  value = 4;
+                  value = 5;
 
                   if (row == min) {
-                     value = 7;
-                  } else if (row == max) {
+                     // top left
                      value = 1;
+                  } else if (row == max) {
+                     // bottom left
+                     value = 9;
                   }
-               } else if(col == end) {
-                  value = 6;
+               } else if(col == end - 1) {
+                  // right edge
+                  value = 7;
 
                   if (row == min) {
-                     value = 9;
-                  } else if(row == max) {
+                     // top right
                      value = 3;
+                  } else if(row == max) {
+                     // bottom right
+                     value = 11;
                   }
                } else {
                   if (row == min) {
-                     value = 8;
-                  } else if(row == max) {
+                     // center top
                      value = 2;
+                  } else if(row == max) {
+                     // center bottom
+                     value = 10;
                   }
                }
             }
@@ -439,7 +446,7 @@ var Game = (function() {
       var offset = Math.floor(this.bird.x / this.terrain.cellSize);
       var count = Math.floor(this.canvas.width / this.terrain.cellSize);
 
-      context.drawTiles(this.tileSheet, this.terrain.cells, this.terrain.columns, this.terrain.rows, offset - count, 0, offset + count, this.terrain.rows);
+      context.drawTiles(this.tileSheet, this.terrain.cells, this.terrain.columns, this.terrain.rows, offset - count, 0, offset + count, this.terrain.rows, this.terrain.cellSize, this.terrain.cellSize);
 
       // Animate and draw the player.
       var animationName = this.spriteAnimationName;

@@ -113,9 +113,12 @@ var TileSheet = (function() {
 })();
 
 (function() {
-   CanvasRenderingContext2D.prototype.drawTiles = function(tileSheet, data, columns, rows, startX, startY, endX, endY) {
+   CanvasRenderingContext2D.prototype.drawTiles = function(tileSheet, data, columns, rows, startX, startY, endX, endY, cellWidth, cellHeight) {
       var tileWidth = tileSheet.image.width / tileSheet.columns;
       var tileHeight = tileSheet.image.height / tileSheet.rows;
+
+      cellWidth = cellWidth || tileWidth;
+      cellHeight = cellHeight || tileHeight;
 
       for (var x = startX; x < endX; x++) {
          for (var y = startY; y < endY; y++) {
@@ -131,7 +134,7 @@ var TileSheet = (function() {
             var sx = (i % (tileSheet.image.width / tileWidth)) * tileWidth;
             var sy = Math.floor(i / (tileSheet.image.width / tileWidth)) * tileHeight;
 
-            this.drawImage(tileSheet.image, sx, sy, tileWidth, tileHeight, (x * tileWidth) - (tileWidth / 2), -(y * tileHeight) - tileHeight / 2, tileWidth, tileHeight );
+            this.drawImage(tileSheet.image, sx, sy, tileWidth, tileHeight, (x * cellWidth) - (cellWidth / 2), -(y * cellHeight) - cellHeight / 2, cellWidth, cellHeight);
          }
       }
    };
