@@ -476,7 +476,7 @@ var Game = (function() {
       var animation = this.spriteSheet.animations[this.spriteAnimationName];
       var index = animation[this.spriteAnimationFrame];
 
-      context.drawSprite(this.spriteSheet, index, this.bird.x, -this.bird.y, 70, 32);
+      context.drawSprite(this.spriteSheet, index, this.bird.x, -this.bird.y, this.bird.radius * 2, this.bird.radius * 2);
 
       // Draw the score
       context.setTransform(1, 0, 0, 1, 0, 0);
