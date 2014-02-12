@@ -374,6 +374,15 @@ var Game = (function() {
       }
 
       if (this.state == 'play' || this.state == 'end') {
+         if (this.bird.position.x > (this.terrain.columns * this.terrain.cellSize)) {
+            this.bird.position.x -= this.bird.position.x;
+
+            var padding = (this.canvas.width / this.terrain.cellSize);
+
+            this.terrain.fill(0, 1, this.terrain.columns , this.terrain.rows);
+            this.terrain.generate(padding, this.terrain.columns - 5);
+         }
+
          var block = this.terrain.queryAt(this.bird.x, this.bird.y);
          var position = this.bird.position.clone();
 
