@@ -444,7 +444,7 @@ var Game = (function() {
       // Draw the map.
       // start and end indices based on where the camera is looking at.
       var offset = Math.floor(this.bird.x / this.terrain.cellSize);
-      var count = Math.floor(this.canvas.width / this.terrain.cellSize);
+      var count = Math.floor(this.canvas.width / this.terrain.cellSize) + 2;
 
       context.drawTiles(this.tileSheet, this.terrain.cells, this.terrain.columns, this.terrain.rows, offset - count, 0, offset + count, this.terrain.rows, this.terrain.cellSize, this.terrain.cellSize);
 
