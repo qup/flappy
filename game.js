@@ -317,15 +317,8 @@ var Game = (function() {
          var audio = new Audio();
 
          audio.addEventListener('canplaythrough', loadCallback, false);
-         audio.addEventListener('ended', function() {
-            console.log('resetting time');
-            this.currentTime = 0;
-            console.log(this);
-         });
-
-         audio.preload = true;
-         audio.loop = true;
          audio.src = uri;
+         audio.load();
 
          return audio;
       };
