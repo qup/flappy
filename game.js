@@ -340,12 +340,14 @@ var Game = (function() {
    Game.prototype.prepareGame = function() {
       this.state = 'start';
 
-      var cellSize = 32;
-
       this.score = 0;
-      this.bird = new Bird(20, this.canvas.height / 2, 16);
 
-      this.terrain = new Terrain((this.canvas.width / cellSize) * 24, (this.canvas.height / cellSize), cellSize, Math.floor(this.canvas.width / cellSize) * 1.5, 10);
+      var cellSize = 32;
+      var columns = Math.floor(this.canvas.width / 2) * 24;
+      var rows = Math.floor(this.canvas.height / cellSize) + 1;
+      this.terrain = new Terrain(columns, rows, cellSize, 15);
+
+      this.bird = new Bird(cellSize * 2, this.canvas.height / 2, 16);
    };
 
    Game.prototype.startGame = function() {
