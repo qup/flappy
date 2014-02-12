@@ -488,14 +488,14 @@ var Game = (function() {
 
    Game.prototype.tick = function(time) {
       var accumulator = 0;
-      var previousTime = 0;
+      var previousTime = null;
 
       // integrate at 120 steps per second.
       var dt = 1 / 120;
 
       var callback = function(timestamp) {
          var currentTime = (timestamp / 1000);
-         var frameTime = (currentTime - previousTime);
+         var frameTime = (currentTime - (previousTime || currentTime));
          previousTime = currentTime;
 
          accumulator += frameTime;
