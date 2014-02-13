@@ -3,12 +3,14 @@ var Bird = (function() {
    var velocity;
    var radius;
    var dead;
+   var mass;
 
    function Bird(x, y, radius) {
       this.position = new Vec2(x, y);
       this.velocity = new Vec2(0, 0);
       this.radius = radius;
       this.dead = false;
+      this.mass = 1.3;
    }
 
    Object.defineProperty(Bird.prototype, 'x', {
@@ -28,10 +30,10 @@ var Bird = (function() {
    });
 
    Bird.prototype.step = function(dt) {
-      var gravity = -1000;
+      var gravity = -980;
 
       // apply forces.
-      this.velocity.y += gravity * dt;
+      this.velocity.y += (gravity * this.mass) * dt;
 
       // terminal velocity:
       var max = 1500;
@@ -49,7 +51,7 @@ var Bird = (function() {
          return;
       }
 
-      this.velocity.y = 450;
+      this.velocity.y = 460;
       this.velocity.x = 150;
    };
 
@@ -89,7 +91,7 @@ var Terrain = (function() {
             width--;
          }
 
-         var distance = Math.ceil(192 / this.cellSize);
+         var distance = Math.ceil(128 / this.cellSize);
          this.generateObstacle(i, i + width, distance);
 
          var min = Math.floor(128 / this.cellSize);
@@ -354,7 +356,7 @@ var Game = (function() {
 
       this.score = 0;
 
-      var cellSize = 32;
+      var cellSize = 64;
       var columns = Math.floor(this.canvas.width / 2) * 24;
       var rows = Math.floor(this.canvas.height / cellSize) + 1;
       this.terrain = new Terrain(columns, rows, cellSize, 15);
