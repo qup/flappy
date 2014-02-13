@@ -89,10 +89,13 @@ var Terrain = (function() {
             width--;
          }
 
-         this.generateObstacle(i, i + width, 6);
+         var distance = Math.ceil(192 / this.cellSize);
+         this.generateObstacle(i, i + width, distance);
 
+         var min = Math.floor(128 / this.cellSize);
+         var max = Math.floor(256 / this.cellSize);
+         var seperation = Math.floor(Math.random() * ( max - min + 1)) + min;
 
-         var seperation = Math.floor(Math.random() * (8 - 4 + 1)) + 4;
          i += width + seperation;
       }
    }
