@@ -485,39 +485,41 @@ var Game = (function() {
 
       context.drawSprite(this.spriteSheet, index, this.bird.x, -this.bird.y, 0, 1);
 
-      console.log(angle);
-
-      context.drawSprite(this.spriteSheet, index, this.bird.x, -this.bird.y, angle, 1);
-
-      // Draw the score
+      // Draw HUD elements.
       context.setTransform(1, 0, 0, 1, 0, 0);
-      context.font = '32px munro';
-      context.textAlign = 'center';
 
       if (this.state == 'play') {
-         context.fillText(this.score.toString(), context.canvas.width / 2, context.canvas.height / 8);
+         context.textAlign = 'center';
+         context.font = '44px munro';
+
+         context.fillStyle = 'white';
+         context.fillText(this.score.toString(), context.canvas.width / 2, 100);
+
       } else if (this.state == 'start') {
-         context.fillText('Tap to start', context.canvas.width / 2, context.canvas.height / 8);
+         context.textAlign = 'center';
+         context.font = '90px munro';
+         context.fillStyle = 'white';
+         context.fillText('flappy', context.canvas.width / 2, 100 );
+
+         context.textAlign = 'center';
+         context.font = '24px munro';
+         context.fillStyle = 'white';
+         context.fillText('tap to play', context.canvas.width / 2, 150);
+
       } else if(this.state == 'end') {
          context.textAlign = 'center';
 
-         context.fillStyle = 'black';
-         context.font = '36px munro';
-         context.fillText('Game Over', context.canvas.width / 2, context.canvas.height / 8);
-
-         var top = context.canvas.height / 4;
+         context.fillStyle = 'white';
+         context.font = '64px munro';
+         context.fillText('Game Over!', context.canvas.width / 2, 100);
 
          context.font = '24px munro';
-         context.fillText('Score', context.canvas.width / 2, top);
-         top += 24;
+         context.fillText('Score', context.canvas.width / 2, 150);
 
-         context.fillText(this.score.toString(), context.canvas.width / 2, top);
-         top += 34;
+         context.fillText(this.score.toString(), context.canvas.width / 2, 180 );
 
-         context.fillText('Best', context.canvas.width / 2, top);
-         top += 24;
-
-         context.fillText(this.highscore.toString(), context.canvas.width / 2, top);
+         context.fillText('Best', context.canvas.width / 2, 250);
+         context.fillText(this.highscore.toString(), context.canvas.width / 2, 280);
       }
    };
 
