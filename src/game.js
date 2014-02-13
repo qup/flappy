@@ -400,10 +400,17 @@ var Game = (function() {
          var block = this.terrain.queryAt(this.bird.x, this.bird.y);
          var position = this.bird.position.clone();
 
-         this.bird.step(dt);
-
          if (this.bird.y > this.canvas.height - (this.bird.radius * 2)) {
             this.bird.velocity.y = -100;
+         }
+
+         this.bird.step(dt);
+
+         if (block == 0) {
+            if (this.terrain.queryAt(this.bird.x, this.bird.y) < 0) {
+               this.scoreSound.cloneNode().play();
+               this.score++;
+            }
          }
 
          if (this.terrain.intersects(this.bird)) {
@@ -413,12 +420,7 @@ var Game = (function() {
             }
 
             this.bird.position = position.clone();
-
-            var that = this;
-            that.endGame();
-         } else if (this.terrain.queryAt(this.bird.x, this.bird.y) != block && block == 0) {
-            this.scoreSound.cloneNode().play();
-            this.score++;
+            this.endGame();
          }
       }
 
