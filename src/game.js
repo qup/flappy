@@ -393,7 +393,7 @@ var Game = (function() {
 
             var padding = (this.canvas.width / this.terrain.cellSize);
 
-            this.terrain.fill(0, 1, this.terrain.columns , this.terrain.rows);
+            this.terrain.fill(0, 1, this.terrain.columns , this.terrain.rows, -1);
             this.terrain.generate(padding, this.terrain.columns - 5);
          }
 
