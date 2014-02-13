@@ -110,9 +110,9 @@ var Terrain = (function() {
 
    Terrain.prototype.generateObstacle = function(start, end, distance) {
       do {
-         var min = Math.floor(Math.random() * (this.rows - distance - 1));
-         var max = min + distance;
-      } while(min + max < this.rows);
+         var min = Math.floor(Math.random() * (this.rows - 1));
+         var max = min + (distance + 1);
+      } while((min + max) > this.rows);
 
       for (var col = start; (col < end) && (col < this.columns); col++) {
          for (var row = 0; row < this.rows; row++) {
