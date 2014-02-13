@@ -242,9 +242,13 @@ var Game = (function() {
    var deathSound;
    var scoreSound;
 
+   var previousTime;
+   var accumulator;
+
    function Game(parent) {
       this.canvas = this.createCanvas(parent);
       this.highscore = window.localStorage.getItem('highscore') || 0;
+      this.accumulator = 0;
 
       this.input = {
          flapping: false,
@@ -255,8 +259,11 @@ var Game = (function() {
          document.addEventListener(type, Game.prototype.handleEvent.bind(that));
       });
 
-      this.preload();
+      window.addEventListener('blur', Game.prototype.pause.bind(that));
+      window.addEventListener('focus', Game.prototype.resume.bind(that));
+
       window.requestAnimationFrame(Game.prototype.tick.bind(that));
+      this.preload();
    }
 
    Game.prototype.createCanvas = function(parent) {
@@ -379,7 +386,20 @@ var Game = (function() {
       }
    };
 
+   Game.prototype.pause = function() {
+      this.state = 'pause';
+   };
+
+   Game.prototype.resume = function() {
+      this.previousTime = undefined;
+      this.state = 'play';
+   };
+
    Game.prototype.step = function(dt) {
+      if (this.state == 'pause') {
+         return;
+      }
+
       if (this.state == 'play') {
          if (this.input.flapping) {
             this.bird.flap();
@@ -442,6 +462,10 @@ var Game = (function() {
          return;
       }
 
+      if (this.state == 'pause') {
+         dt = 0;
+      }
+
       // Draw the background
       context.drawImage(this.backgroundImage, 0, 0, this.backgroundImage.width, this.backgroundImage.height, 0, 0, context.canvas.width, context.canvas.height);
 
@@ -497,6 +521,10 @@ var Game = (function() {
          context.fillStyle = 'white';
          context.fillText(this.score.toString(), context.canvas.width / 2, 100);
 
+      } else if (this.state == 'pause') {
+         context.textAlign = 'center';
+         context.font = '64px munro';
+         context.fillText('Pause', context.canvas.width / 2, 100);
       } else if (this.state == 'start') {
          context.textAlign = 'center';
          context.font = '90px munro';
@@ -525,32 +553,25 @@ var Game = (function() {
       }
    };
 
-   Game.prototype.tick = function(time) {
-      var accumulator = 0;
-      var previousTime = null;
-
+   Game.prototype.tick = function(timestamp) {
       // integrate at 120 steps per second.
       var dt = 1 / 120;
 
-      var callback = function(timestamp) {
-         var currentTime = (timestamp / 1000);
-         var frameTime = (currentTime - (previousTime || currentTime));
-         previousTime = currentTime;
+      var currentTime = (timestamp / 1000);
+      var frameTime = (currentTime - (this.previousTime || currentTime));
+      this.previousTime = currentTime;
 
-         accumulator += frameTime;
+      this.accumulator += frameTime;
 
-         while ( accumulator >= dt ) {
-            accumulator -= dt;
-            this.step(dt);
-         }
+      while ( this.accumulator >= dt ) {
+         this.accumulator -= dt;
+         this.step(dt);
+      }
 
-         this.draw(frameTime);
+      this.draw(frameTime);
 
-         window.requestAnimationFrame(callback.bind(this));
-      };
-
-      return callback;
-   }();
+      window.requestAnimationFrame(Game.prototype.tick.bind(this));
+   };
 
    return Game;
 })();
