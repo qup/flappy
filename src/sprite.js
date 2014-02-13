@@ -81,17 +81,18 @@ var SpriteSheet = (function () {
 })();
 
 (function() {
-   CanvasRenderingContext2D.prototype.drawSprite = function(spriteSheet, index, dx, dy, dw, dh) {
+   CanvasRenderingContext2D.prototype.drawSprite = function(spriteSheet, index, x, y, angle, scale) {
       var frame = spriteSheet.frames[index];
 
-      var sx = frame.left;
-      var sy = frame.top;
-      var sw = frame.right - frame.left;
-      var sh = frame.bottom - frame.top;
+      var height = frame.bottom - frame.top;
+      var width = frame.right - frame.left;
 
-      dx -= dw / 2;
-      dy -= dh / 2;
+      this.save();
+      this.translate(x, y);
+      this.rotate(angle);
+      this.scale(scale, scale);
 
-      this.drawImage(spriteSheet.image, sx, sy, sw, sh, dx, dy, dw, dh);
+      this.drawImage(spriteSheet.image, frame.left, frame.top, width, height, -width / 2, -height / 2, width, height);
+      this.restore();
    };
 })();
