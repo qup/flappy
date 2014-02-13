@@ -260,8 +260,8 @@ var Game = (function() {
    Game.prototype.createCanvas = function(parent) {
       var canvas = document.createElement('canvas');
 
-      canvas.width = 320;
-      canvas.height = 480;
+      canvas.width = 360;
+      canvas.height = 640;
 
       parent.appendChild(canvas);
 
