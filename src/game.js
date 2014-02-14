@@ -62,6 +62,7 @@ var Bird = (function() {
 
       this.dead = true;
       this.velocity.x = 0;
+      this.velocity.y = 250;
    };
 
    return Bird;
@@ -420,7 +421,6 @@ var Game = (function() {
          }
 
          var block = this.terrain.queryAt(this.bird.x, this.bird.y);
-         var position = this.bird.position.clone();
 
          if (this.bird.y > this.canvas.height - (this.bird.radius * 2)) {
             this.bird.velocity.y = -100;
@@ -441,12 +441,9 @@ var Game = (function() {
                this.deathSound.cloneNode().play();
             }
 
-            this.bird.position = position.clone();
             this.endGame();
          }
       }
-
-
    };
 
    Game.prototype.draw = function(dt) {
