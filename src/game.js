@@ -524,6 +524,7 @@ var Game = (function() {
          context.fillText(this.score.toString(), context.canvas.width / 2, 100);
 
       } else if (this.state == 'pause') {
+         context.fillStyle = 'white';
          context.textAlign = 'center';
          context.font = '64px munro';
          context.fillText('Pause', context.canvas.width / 2, 100);
