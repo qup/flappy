@@ -228,6 +228,7 @@ var Game = (function() {
    var highscore;
 
    var state;
+   var previousState;
    var input;
 
    var tileSheet;
@@ -388,12 +389,13 @@ var Game = (function() {
    };
 
    Game.prototype.pause = function() {
+      this.previousState = this.state;
       this.state = 'pause';
    };
 
    Game.prototype.resume = function() {
       this.previousTime = undefined;
-      this.state = 'play';
+      this.state = this.previousState;
    };
 
    Game.prototype.step = function(dt) {
