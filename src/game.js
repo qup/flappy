@@ -455,9 +455,11 @@ var Game = (function() {
       context.canvas.width = context.canvas.width;
 
       if (this.state == 'preload') {
-         context.font = '20pt Arial';
          context.textAlign = 'center';
-         context.fillText('Loading...', this.canvas.width / 2, this.canvas.height / 8);
+         context.font = '44px munro';
+
+         context.fillStyle = 'white';
+         context.fillText('Loading', context.canvas.width / 2, 100);
 
          return;
       }
