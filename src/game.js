@@ -1,16 +1,69 @@
-var Game = (function() {
-   var canvas;
-   var bird;
-   var terrain;
-   var score;
-   var highscore;
+var GameState = (function() {
+   var game;
 
-   var state;
-   var previousState;
+   function GameState(game) {
+      this.game = game;
+   }
+
+   GameState.prototype.pause = function() {};
+   GameState.prototype.resume = function() {};
+   GameState.prototype.dispose = function() {};
+
+   GameState.prototype.handleEvent = function(event) {};
+   GameState.prototype.draw = function(deltaTime) {};
+   GameState.prototype.step = function(deltaTime) {};
+
+   return GameState;
+})();
+
+var GameTitleState = (function() {
+   var playState;
+
+   function GameTitleState(game) {
+      GameState.call(this, game);
+
+      this.playState = new GamePlayState(this.game);
+   }
+
+   GameTitleState.prototype = Object.create(GameState.prototype);
+   GameTitleState.constructor = GameTitleState;
+
+   GameTitleState.prototype.handleEvent = function(event) {
+      switch(event.type) {
+         case 'keydown':
+            this.game.changeState(this.playState);
+         break;
+      }
+   }
+
+   GameTitleState.prototype.draw = function(deltaTime) {
+      var context = this.game.canvas.getContext('2d');
+
+      // Draw the play state.
+      this.playState.draw(deltaTime);
+
+      // Draw our title overlay.
+      context.setTransform(1, 0, 0, 1, 0, 0);
+
+      context.textAlign = 'center';
+      context.font = '90px munro';
+      context.fillStyle = 'white';
+      context.fillText('flappy', context.canvas.width / 2, 100 );
+
+      context.textAlign = 'center';
+      context.font = '24px munro';
+      context.fillStyle = 'white';
+      context.fillText('tap to play', context.canvas.width / 2, 150);
+   };
+
+   return GameTitleState;
+})();
+
+var GamePlayState = (function() {
+   var score;
    var input;
 
    var tileSheet;
-
    var spriteSheet;
    var spriteAnimationName;
    var spriteAnimationFrame;
@@ -22,60 +75,31 @@ var Game = (function() {
    var deathSound;
    var scoreSound;
 
-   var previousTime;
-   var accumulator;
+   var loaded;
 
-   function Game(parent) {
-      this.canvas = this.createCanvas(parent);
-      this.highscore = window.localStorage.getItem('highscore') || 0;
-      this.accumulator = 0;
+   function GamePlayState(game) {
+      GameState.call(this, game);
 
+      this.score = 0;
       this.input = {
          flapping: false,
       };
 
-      var that = this;
-      ['mousedown', 'keydown', 'touchstart', 'touchmove'].forEach(function(type) {
-         document.addEventListener(type, Game.prototype.handleEvent.bind(that));
-      });
+      var cellSize = 64;
+      var columns = Math.floor(this.game.canvas.width / 2) * 24;
+      var rows = Math.floor(this.game.canvas.height / cellSize) + 1;
 
-      window.addEventListener('blur', Game.prototype.pause.bind(that));
-      window.addEventListener('focus', Game.prototype.resume.bind(that));
-
-      window.requestAnimationFrame(Game.prototype.tick.bind(that));
+      this.terrain = new Terrain(columns, rows, cellSize, 15);
+      this.bird = new Bird(cellSize * 2, this.game.canvas.height / 2, 16);
+      this.bird.flap();
       this.preload();
    }
 
-   Game.prototype.createCanvas = function(parent) {
-      var canvas = document.createElement('canvas');
+   GamePlayState.prototype = Object.create(GameState.prototype);
+   GamePlayState.constructor = GamePlayState;
 
-      canvas.width = 360;
-      canvas.height = 640;
-
-      parent.appendChild(canvas);
-
-      return canvas;
-   };
-
-   Game.prototype.handleEvent = function(event) {
-
-      if (event.type == 'mousedown' || event.type == 'keydown' || event.type == 'touchstart') {
-         if (this.state == 'start') {
-            this.startGame();
-         } else if (this.state == 'end') {
-            this.prepareGame();
-         } else if (this.state == 'play') {
-            this.input.flapping = true;
-         }
-      }
-
-      event.preventDefault();
-   };
-
-   Game.prototype.preload = function() {
-      this.state = 'preload';
-
-
+   GamePlayState.prototype.preload = function() {
+      this.loaded = false;
       var filesLoaded = 0;
       var filesTotal = 0;
 
@@ -84,9 +108,8 @@ var Game = (function() {
          filesLoaded++;
 
          if (filesLoaded >= filesTotal) {
-            that.prepareGame();
+            that.loaded = true;
          }
-         console.log('loaded file, %i remaining', filesTotal - filesLoaded);
       };
 
       var loadTileSheet = function(uri) {
@@ -138,100 +161,74 @@ var Game = (function() {
       this.scoreSound = loadAudio('sounds/score.wav');
    };
 
-   Game.prototype.prepareGame = function() {
-      this.state = 'start';
+   GamePlayState.prototype.handleEvent = function(event) {
+      switch (event.type) {
+         case 'keydown':
+            this.input.flapping = true;
+            break;
 
-      this.score = 0;
-
-      var cellSize = 64;
-      var columns = Math.floor(this.canvas.width / 2) * 24;
-      var rows = Math.floor(this.canvas.height / cellSize) + 1;
-      this.terrain = new Terrain(columns, rows, cellSize, 15);
-
-      this.bird = new Bird(cellSize * 2, this.canvas.height / 2, 16);
-   };
-
-   Game.prototype.startGame = function() {
-      this.state = 'play';
-      this.input.flapping = true;
-   };
-
-   Game.prototype.endGame = function() {
-      this.state = 'end';
-
-      if (this.score > this.highscore) {
-         this.highscore = this.score;
-
-         window.localStorage.setItem('highscore', this.highscore);
+         case 'blur':
+            this.game.pushState(new GamePauseState(this.game, this));
+         break;
       }
    };
 
-   Game.prototype.pause = function() {
-      this.previousState = this.state;
-      this.state = 'pause';
-   };
-
-   Game.prototype.resume = function() {
-      this.previousTime = undefined;
-      this.state = this.previousState;
-   };
-
-   Game.prototype.step = function(dt) {
-      if (this.state == 'pause') {
+   GamePlayState.prototype.step = function(deltaTime) {
+      if (this.loading) {
          return;
       }
 
-      if (this.state == 'play') {
-         if (this.input.flapping) {
-            this.bird.flap();
-            this.input.flapping = false;
+      if (this.input.flapping) {
+         this.bird.flap();
+         this.input.flapping = false;
 
-            this.flapSound.cloneNode().play();
+         this.flapSound.cloneNode().play();
+      }
+
+      if (this.bird.position.x > (this.terrain.columns * this.terrain.cellSize)) {
+         this.bird.position.x -= this.bird.position.x;
+
+         var padding = (this.canvas.width / this.terrain.cellSize);
+
+         this.terrain.fill(0, 1, this.terrain.columns , this.terrain.rows, -1);
+         this.terrain.generate(padding, this.terrain.columns - 5);
+      }
+
+      var block = this.terrain.queryAt(this.bird.x, this.bird.y);
+
+      if (this.bird.y > this.game.canvas.height - (this.bird.radius * 2)) {
+         this.bird.velocity.y = -100;
+      }
+
+      this.bird.step(deltaTime);
+
+      if (block == 0) {
+         if (this.terrain.queryAt(this.bird.x, this.bird.y) < 0) {
+            this.scoreSound.cloneNode().play();
+            this.score++;
          }
       }
 
-      if (this.state == 'play' || this.state == 'end') {
-         if (this.bird.position.x > (this.terrain.columns * this.terrain.cellSize)) {
-            this.bird.position.x -= this.bird.position.x;
-
-            var padding = (this.canvas.width / this.terrain.cellSize);
-
-            this.terrain.fill(0, 1, this.terrain.columns , this.terrain.rows, -1);
-            this.terrain.generate(padding, this.terrain.columns - 5);
+      if (this.terrain.intersects(this.bird)) {
+         if (!this.bird.dead) {
+            this.bird.die();
+            this.deathSound.cloneNode().play();
          }
 
-         var block = this.terrain.queryAt(this.bird.x, this.bird.y);
-
-         if (this.bird.y > this.canvas.height - (this.bird.radius * 2)) {
-            this.bird.velocity.y = -100;
-         }
-
-         this.bird.step(dt);
-
-         if (block == 0) {
-            if (this.terrain.queryAt(this.bird.x, this.bird.y) < 0) {
-               this.scoreSound.cloneNode().play();
-               this.score++;
-            }
-         }
-
-         if (this.terrain.intersects(this.bird)) {
-            if (!this.bird.dead) {
-               this.bird.die();
-               this.deathSound.cloneNode().play();
-            }
-
-            this.endGame();
-         }
+         this.game.pushState(new GameOverState(this.game, this));
       }
    };
 
-   Game.prototype.draw = function(dt) {
-      var context = this.canvas.getContext('2d');
+   GamePlayState.prototype.draw = function(deltaTime) {
+      if (this.loading) {
+         return;
+      }
+
+      var context = this.game.canvas.getContext('2d');
 
       context.canvas.width = context.canvas.width;
 
-      if (this.state == 'preload') {
+      if (!this.loaded) {
          context.textAlign = 'center';
          context.font = '44px munro';
 
@@ -239,10 +236,6 @@ var Game = (function() {
          context.fillText('Loading', context.canvas.width / 2, 100);
 
          return;
-      }
-
-      if (this.state == 'pause') {
-         dt = 0;
       }
 
       // Draw the background
@@ -256,7 +249,7 @@ var Game = (function() {
       // Draw the map.
       // start and end indices based on where the camera is looking at.
       var offset = Math.floor(this.bird.x / this.terrain.cellSize);
-      var count = Math.floor(this.canvas.width / this.terrain.cellSize) + 2;
+      var count = Math.floor(this.game.canvas.width / this.terrain.cellSize) + 2;
 
       context.drawTiles(this.tileSheet, this.terrain.cells, this.terrain.columns, this.terrain.rows, offset - count, 0, offset + count, this.terrain.rows, this.terrain.cellSize, this.terrain.cellSize);
 
@@ -275,7 +268,7 @@ var Game = (function() {
          this.spriteAnimationTime = 0;
       }
 
-      this.spriteAnimationTime += dt;
+      this.spriteAnimationTime += deltaTime;
       if (this.spriteAnimationTime > 0.05) {
          this.spriteAnimationFrame++;
          this.spriteAnimationTime = 0;
@@ -290,67 +283,242 @@ var Game = (function() {
 
       context.drawSprite(this.spriteSheet, index, this.bird.x, -this.bird.y, 0, 1);
 
-      // Draw HUD elements.
-      context.setTransform(1, 0, 0, 1, 0, 0);
+      if (this.game.currentState == this) {
+         context.setTransform(1, 0, 0, 1, 0, 0);
 
-      if (this.state == 'play') {
          context.textAlign = 'center';
          context.font = '44px munro';
 
          context.fillStyle = 'white';
          context.fillText(this.score.toString(), context.canvas.width / 2, 100);
-
-      } else if (this.state == 'pause') {
-         context.fillStyle = 'white';
-         context.textAlign = 'center';
-         context.font = '64px munro';
-         context.fillText('Pause', context.canvas.width / 2, 100);
-      } else if (this.state == 'start') {
-         context.textAlign = 'center';
-         context.font = '90px munro';
-         context.fillStyle = 'white';
-         context.fillText('flappy', context.canvas.width / 2, 100 );
-
-         context.textAlign = 'center';
-         context.font = '24px munro';
-         context.fillStyle = 'white';
-         context.fillText('tap to play', context.canvas.width / 2, 150);
-
-      } else if(this.state == 'end') {
-         context.textAlign = 'center';
-
-         context.fillStyle = 'white';
-         context.font = '64px munro';
-         context.fillText('Game Over!', context.canvas.width / 2, 100);
-
-         context.font = '24px munro';
-         context.fillText('Score', context.canvas.width / 2, 150);
-
-         context.fillText(this.score.toString(), context.canvas.width / 2, 180 );
-
-         context.fillText('Best', context.canvas.width / 2, 250);
-         context.fillText(this.highscore.toString(), context.canvas.width / 2, 280);
       }
    };
 
-   Game.prototype.tick = function(timestamp) {
-      // integrate at 120 steps per second.
-      var dt = 1 / 120;
+   return GamePlayState;
+})();
 
-      var currentTime = (timestamp / 1000);
-      var frameTime = (currentTime - (this.previousTime || currentTime));
-      this.previousTime = currentTime;
+var GamePauseState = (function() {
+   var playState;
+
+   function GamePauseState(game, playState) {
+      GameState.call(this, game);
+
+      this.playState = playState;
+      this.elapsedTime = 0;
+   }
+
+   GamePauseState.prototype = Object.create(GameState.prototype);
+   GamePauseState.constructor = GamePauseState;
+
+   GamePauseState.prototype.handleEvent = function(event) {
+      switch (event.type) {
+         case 'focus':
+            // Pop self, thus resuming the game play state.
+            this.game.popState();
+         break;
+      }
+   };
+
+   GamePauseState.prototype.draw = function(deltaTime) {
+      var context = this.game.canvas.getContext('2d');
+      var elapsedTime = window.performance.now() / 1000;
+
+      this.playState.draw(deltaTime);
+
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      context.fillStyle = 'white';
+      context.textAlign = 'center';
+
+      context.font = '64px munro';
+      context.fillText('Pause', context.canvas.width / 2, context.canvas.height / 2 - 100);
+
+         };
+
+   return GamePauseState;
+})();
+
+var GameOverState = (function() {
+   var playState;
+   var highScore;
+
+   function GameOverState(game, playState) {
+      GameState.call(this, game);
+
+      this.playState = playState;
+
+      this.highScore = window.localStorage.getItem('highscore') || 0;
+      if (this.highScore > this.playState.score) {
+         this.highScore = this.playState.score;
+         window.localStorage.setItem('highscore', this.highScore);
+      }
+   }
+
+   GameOverState.prototype = Object.create(GameState.prototype);
+   GameOverState.constructor = GameOverState;
+
+   GameOverState.prototype.handleEvent = function(event) {
+      if (event.type == 'keydown') {
+         this.game.changeState(new GameTitleState(this.game));
+      }
+   };
+
+   GameOverState.prototype.step = function(deltaTime) {
+      this.playState.step(deltaTime);
+   };
+
+   GameOverState.prototype.draw = function(deltaTime) {
+      var context = this.game.canvas.getContext('2d');
+      var elapsedTime = window.performance.now() / 1000;
+
+      this.playState.draw(deltaTime);
+
+      context.setTransform(1, 0, 0, 1, 0, 0);
+
+      context.textAlign = 'center';
+      context.fillStyle = 'white';
+      context.font = '64px munro';
+      context.fillText('Game Over!', context.canvas.width / 2, 100);
+
+      context.font = '34px munro';
+      context.fillText('Score', context.canvas.width / 2, 200);
+
+      context.fillText(this.playState.score.toString(), context.canvas.width / 2, 245 );
+
+      context.fillText('Best', context.canvas.width / 2, 300);
+      context.fillText(this.highScore.toString(), context.canvas.width / 2, 345);
+   };
+
+   return GameOverState;
+})();
+
+var Game = (function() {
+   var canvas;
+   var states;
+
+   var time;
+   var accumulator;
+
+   //
+   //
+   function Game(element) {
+      this.states = new Array();
+      this.canvas = document.createElement('canvas');
+      this.accumulator = 0;
+      this.canvas.width = 360;
+      this.canvas.height = 640;
+
+      window.document.body.appendChild(this.canvas);
+
+      var events = [
+         'keydown',
+         'keyup',
+         'mousedown',
+         'mousemove',
+         'touchstart',
+         'touchmove',
+         'touchend',
+         'blur',
+         'focus',
+         'focusin',
+         'focusout'
+      ];
+
+      for (var i = 0; i < events.length; i++) {
+         window.addEventListener(events[i], Game.prototype.handleEvent.bind(this), true);
+      }
+
+      window.requestAnimationFrame(Game.prototype.tick.bind(this));
+   }
+
+   //
+   //
+   Game.prototype.pushState = function(state) {
+      this.states.push(state);
+   };
+
+   //
+   //
+   Game.prototype.popState = function() {
+      if (this.states.length > 0) {
+         this.states[this.states.length - 1].dispose();
+         var state = this.states.pop();
+
+         if (this.states.length > 0) {
+            this.states[this.states.length - 1].resume();
+         }
+
+         return state;
+      }
+   };
+
+   //
+   //
+   Game.prototype.changeState = function(state) {
+      while(this.states.length > 0) {
+         this.states[this.states.length - 1].dispose();
+         this.states.pop();
+      }
+
+      this.pushState(state);
+   };
+
+   Object.defineProperty(Game.prototype, 'currentState', {
+      get: function () {
+         return this.states[this.states.length - 1];
+      },
+      enumerable: true,
+      configurable: true
+   });
+
+   //
+   //
+   Game.prototype.handleEvent = function(event) {
+      if (this.states.length > 0) {
+         this.states[this.states.length - 1].handleEvent(event);
+      }
+   };
+
+   //
+   //
+   Game.prototype.draw = function(deltaTime) {
+      if (this.states.length > 0) {
+         this.states[this.states.length - 1].draw(deltaTime);
+      }
+   };
+
+   //
+   //
+   Game.prototype.step = function(deltaTime) {
+      if (this.states.length > 0) {
+         this.states[this.states.length - 1].step(deltaTime);
+      }
+   };
+
+   //
+   //
+   Game.prototype.tick = function(time) {
+      if (time == undefined) {
+         time = window.performance.now();
+      }
+
+      var dt = 1 / 60;
+      var frameTime = (time - (this.time || time)) / 1000;
+      this.time = time;
 
       this.accumulator += frameTime;
 
-      while ( this.accumulator >= dt ) {
+      while (this.accumulator >= dt) {
          this.accumulator -= dt;
          this.step(dt);
       }
 
       this.draw(frameTime);
 
-      window.requestAnimationFrame(Game.prototype.tick.bind(this));
+      if (window.document.hasFocus()) {
+         window.requestAnimationFrame(Game.prototype.tick.bind(this));
+      } else {
+         window.setTimeout(Game.prototype.tick.bind(this), 500);
+      }
    };
 
    return Game;
