@@ -10,7 +10,7 @@ var Bird = (function() {
       this.velocity = new Vec2(0, 0);
       this.radius = radius;
       this.dead = false;
-      this.mass = 1.3;
+      this.mass = 1.32;
    }
 
    Object.defineProperty(Bird.prototype, 'x', {
@@ -52,7 +52,7 @@ var Bird = (function() {
       }
 
       this.velocity.y = 460;
-      this.velocity.x = 150;
+      this.velocity.x = 190;
    };
 
    Bird.prototype.die = function() {
