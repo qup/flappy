@@ -23,7 +23,7 @@ var Terrain = (function() {
          var distance = Math.ceil(128 / this.cellSize);
          this.generateObstacle(i, i + width, distance, border);
 
-         var min = Math.floor(128 / this.cellSize);
+         var min = Math.floor(192 / this.cellSize);
          var max = Math.floor(256 / this.cellSize);
          var seperation = Math.floor(Math.random() * ( max - min + 1)) + min;
 
