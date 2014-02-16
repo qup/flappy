@@ -5,12 +5,12 @@ var Bird = (function() {
    var dead;
    var mass;
 
-   function Bird(x, y, radius) {
+   function Bird(x, y, radius, mass) {
       this.position = new Vec2(x, y);
       this.velocity = new Vec2(0, 0);
       this.radius = radius;
+      this.mass = mass;
       this.dead = false;
-      this.mass = 1.32;
    }
 
    Object.defineProperty(Bird.prototype, 'x', {

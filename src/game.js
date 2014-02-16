@@ -123,7 +123,7 @@ var GamePlayState = (function() {
       this.terrain.fill(0, this.terrainBorder - 1, columns, this.terrainBorder, 1);
       this.generationIndex = 0;
 
-      this.bird = new Bird(this.view.width - 300, this.game.canvas.height / 2, 16);
+      this.bird = new Bird(this.view.width - 300, this.game.canvas.height / 2, 16, 1.32);
 
       this.setView(this.bird);
 
