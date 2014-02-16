@@ -4,15 +4,12 @@ var Terrain = (function() {
    var cells;
    var cellSize;
 
-   function Terrain(columns, rows, cellSize, bleed) {
+   function Terrain(columns, rows, cellSize) {
       this.rows = rows;
       this.columns = columns;
       this.cellSize = cellSize;
       this.cells = new Array(rows * columns);
-
       this.fill(0, 0, this.columns, this.rows, -1);
-      this.fill(0, 0, this.columns, 1, 12);
-      this.generate(bleed, this.columns);
    }
 
    Terrain.prototype.generate = function(i, length, border) {
