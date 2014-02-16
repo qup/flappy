@@ -127,6 +127,7 @@ var GamePlayState = (function() {
 
       this.setView(this.bird);
 
+      this.input.flapping = true;
       this.preload();
    }
 
