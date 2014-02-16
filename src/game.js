@@ -60,6 +60,8 @@ var GameTitleState = (function() {
 })();
 
 var GamePlayState = (function() {
+   var bird;
+   var terrain;
    var score;
    var input;
 
