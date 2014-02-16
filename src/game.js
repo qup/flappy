@@ -126,75 +126,19 @@ var GamePlayState = (function() {
       this.bird = new Bird(this.view.width - 300, this.game.canvas.height / 2, 16, 1.32);
 
       this.setView(this.bird);
-
       this.input.flapping = true;
-      this.preload();
+
+      this.spriteSheet = this.game.assets['spritesheets/sprite'];
+      this.tileSheet = this.game.assets['tilesheets/tiles'];
+      this.backgroundImage = this.game.assets['images/background'];
+
+      this.flapSound = this.game.assets['sounds/flap'];
+      this.deathSound = this.game.assets['sounds/death'];
+      this.scoreSound = this.game.assets['sounds/score'];
    }
 
    GamePlayState.prototype = Object.create(GameState.prototype);
    GamePlayState.constructor = GamePlayState;
-
-   GamePlayState.prototype.preload = function() {
-      this.loaded = false;
-      var filesLoaded = 0;
-      var filesTotal = 0;
-
-      var that = this;
-      var loadCallback = function(event) {
-         filesLoaded++;
-
-         if (filesLoaded >= filesTotal) {
-            that.loaded = true;
-         }
-      };
-
-      var loadTileSheet = function(uri) {
-         var tileSheet = new TileSheet();
-
-         tileSheet.addEventListener('load', loadCallback, false);
-         tileSheet.src = uri;
-
-         return tileSheet;
-      };
-
-      var loadSpriteSheet = function(uri) {
-         var spriteSheet = new SpriteSheet();
-
-         spriteSheet.addEventListener('load', loadCallback, false);
-         spriteSheet.src = uri;
-
-
-         return spriteSheet;
-      };
-
-      var loadImage = function(uri) {
-         var image = new Image();
-
-         image.addEventListener('load', loadCallback, false);
-         image.src = uri;
-
-         return image;
-      };
-
-      var loadAudio = function(uri) {
-         var audio = new Howl({
-            urls: [uri],
-            onload: loadCallback,
-         });
-
-         return audio;
-      };
-
-      filesTotal = 6;
-
-      this.tileSheet = loadTileSheet('tilesheets/tiles.json');
-      this.spriteSheet = loadSpriteSheet('spritesheets/sprite.json');
-      this.backgroundImage = loadImage('images/background.png');
-
-      this.flapSound = loadAudio('sounds/flap.wav');
-      this.deathSound = loadAudio('sounds/death.wav');
-      this.scoreSound = loadAudio('sounds/score.wav');
-   };
 
    GamePlayState.prototype.handleEvent = function(event) {
       switch(event.type) {
@@ -228,10 +172,6 @@ var GamePlayState = (function() {
    };
 
    GamePlayState.prototype.step = function(deltaTime) {
-      if (this.loading) {
-         return;
-      }
-
       this.setView(this.bird);
 
       var width = Math.round(this.view.width / this.terrain.cellSize);
@@ -291,23 +231,9 @@ var GamePlayState = (function() {
    };
 
    GamePlayState.prototype.draw = function(deltaTime) {
-      if (this.loading) {
-         return;
-      }
-
       var context = this.game.canvas.getContext('2d');
 
       context.canvas.width = context.canvas.width;
-
-      if (!this.loaded) {
-         context.textAlign = 'center';
-         context.font = '44px munro';
-
-         context.fillStyle = 'white';
-         context.fillText('Loading', context.canvas.width / 2, 100);
-
-         return;
-      }
 
       // Draw the background
       context.drawImage(this.backgroundImage, 0, 0, this.backgroundImage.width, this.backgroundImage.height, 0, 0, context.canvas.width, context.canvas.height);
@@ -490,6 +416,8 @@ var Game = (function() {
    var time;
    var accumulator;
 
+   var assets;
+
    //
    //
    function Game(element) {
@@ -522,7 +450,71 @@ var Game = (function() {
       }
 
       window.requestAnimationFrame(Game.prototype.tick.bind(this));
+
+      this.assets = new Object();
+      this.preload();
    }
+
+   Game.prototype.preload = function() {
+      var filesLoaded = 0;
+      var filesTotal = 0;
+
+      var that = this;
+      var loadCallback = function(event) {
+         filesLoaded++;
+
+         if (filesLoaded >= filesTotal) {
+            that.pushState(new GameTitleState(that));
+         }
+      };
+
+      var loadTileSheet = function(uri) {
+         var tileSheet = new TileSheet();
+
+         tileSheet.addEventListener('load', loadCallback, false);
+         tileSheet.src = uri;
+
+         return tileSheet;
+      };
+
+      var loadSpriteSheet = function(uri) {
+         var spriteSheet = new SpriteSheet();
+
+         spriteSheet.addEventListener('load', loadCallback, false);
+         spriteSheet.src = uri;
+
+         return spriteSheet;
+      };
+
+      var loadImage = function(uri) {
+         var image = new Image();
+
+         image.addEventListener('load', loadCallback, false);
+         image.src = uri;
+
+         return image;
+      };
+
+      var loadAudio = function(uri) {
+         var audio = new Howl({
+            urls: [uri],
+            onload: loadCallback,
+         });
+
+         return audio;
+      };
+
+      filesTotal = 6;
+
+      this.assets['tilesheets/tiles'] = loadTileSheet('tilesheets/tiles.json');
+      this.assets['spritesheets/sprite'] = loadSpriteSheet('spritesheets/sprite.json');
+      this.assets['images/background'] = loadImage('images/background.png');
+
+      this.assets['sounds/flap'] = loadAudio('sounds/flap.wav');
+      this.assets['sounds/death'] = loadAudio('sounds/death.wav');
+      this.assets['sounds/score'] = loadAudio('sounds/score.wav');
+   };
+
 
    //
    //
