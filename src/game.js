@@ -401,8 +401,7 @@ var GamePauseState = (function() {
 
       context.font = '64px munro';
       context.fillText('Pause', context.canvas.width / 2, context.canvas.height / 2 - 100);
-
-         };
+   };
 
    return GamePauseState;
 })();
