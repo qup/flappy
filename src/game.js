@@ -177,11 +177,10 @@ var GamePlayState = (function() {
       };
 
       var loadAudio = function(uri) {
-         var audio = new Audio();
-
-         audio.addEventListener('canplaythrough', loadCallback, false);
-         audio.src = uri;
-         audio.load();
+         var audio = new Howl({
+            urls: [uri],
+            onload: loadCallback,
+         });
 
          return audio;
       };
@@ -257,7 +256,7 @@ var GamePlayState = (function() {
          this.bird.flap();
          this.input.flapping = false;
 
-         this.flapSound.cloneNode().play();
+         this.flapSound.play();
       }
 
       if (this.bird.position.x > (this.terrain.columns * this.terrain.cellSize)) {
@@ -275,7 +274,7 @@ var GamePlayState = (function() {
 
       if (block == 0) {
          if (this.terrain.queryAt(this.bird.x, this.bird.y) < 0) {
-            this.scoreSound.cloneNode().play();
+            this.scoreSound.play();
             this.score++;
          }
       }
@@ -283,7 +282,7 @@ var GamePlayState = (function() {
       if (!this.bird.dead) {
          if (this.terrain.intersects(this.bird)) {
             this.bird.die();
-            this.deathSound.cloneNode().play();
+            this.deathSound.play();
             console.info('Player died, %i, %i', this.bird.x / this.terrain.cellSize, this.bird.y / this.terrain.cellSize);
             this.game.pushState(new GameOverState(this.game, this));
          }
