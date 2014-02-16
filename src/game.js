@@ -485,6 +485,7 @@ var GameOverState = (function() {
 var Game = (function() {
    var canvas;
    var states;
+   var element;
 
    var time;
    var accumulator;
@@ -495,8 +496,10 @@ var Game = (function() {
       this.states = new Array();
       this.canvas = document.createElement('canvas');
       this.accumulator = 0;
-      this.canvas.width = window.innerWidth;
-      this.canvas.height = window.innerHeight;
+      this.element = element;
+
+      this.canvas.width = (this.element) ? this.element.clientWidth : window.innerWidth;
+      this.canvas.height = (this.element) ? this.element.clientHeight : window.innerHeight;
 
       window.document.body.appendChild(this.canvas);
 
