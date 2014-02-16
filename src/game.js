@@ -113,8 +113,7 @@ var GamePlayState = (function() {
          height: this.game.canvas.height,
       };
 
-      var columns = Math.round(this.view.width / cellSize) * 2;
-      var rows = Math.round(this.view.height / cellSize);
+      var columns = Math.round(this.view.width / cellSize) * 4;
 
       this.terrain = new Terrain(columns, rows, cellSize);
       this.terrainBorder = Math.floor((rows - 10) / 2);
