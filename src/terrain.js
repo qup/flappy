@@ -17,7 +17,7 @@ var Terrain = (function() {
 
    Terrain.prototype.generate = function(i, length) {
       while(i < length) {
-         var width = Math.floor(Math.random() * (6 - 2 + 1)) + 2;
+         var width = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
 
          while (i + width > this.columns) {
             width--;
@@ -51,6 +51,7 @@ var Terrain = (function() {
       for (var col = start; (col < end) && (col < this.columns); col++) {
          for (var row = 0; row < this.rows; row++) {
             var value;
+            var width = start - end;
 
             // if it falls within the gap distance, it is an 'air' cell.
             if (row > min && row < max) {
@@ -58,38 +59,48 @@ var Terrain = (function() {
             } else {
                // otherwise, it is some sort of solid tile, determine which.
                // default to center block.
-               value = 6;
+               value = 9;
 
                // check for edges
                if (col == start) {
                   // left edge
-                  value = 5;
+                  value = 8;
 
                   if (row == min) {
                      // top left
-                     value = 1;
+                     value = 4;
                   } else if (row == max) {
                      // bottom left
-                     value = 9;
+                     value = 12;
                   }
                } else if(col == end - 1) {
                   // right edge
-                  value = 7;
+                  value = 10;
 
                   if (row == min) {
                      // top right
-                     value = 3;
+                     value = 6;
                   } else if(row == max) {
                      // bottom right
-                     value = 11;
+                     value = 14;
                   }
                } else {
                   if (row == min) {
-                     // center top
-                     value = 2;
+                     value = 5;
                   } else if(row == max) {
                      // center bottom
-                     value = 10;
+                     value = 13;
+                  }
+               }
+
+               // special case; single width columns.
+               if ((end - start) == 1) {
+                  if (row == min) {
+                     value = 7;
+                  } else if (row == max) {
+                     value = 15;
+                  } else {
+                     value = 11;
                   }
                }
             }
