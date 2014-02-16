@@ -15,7 +15,7 @@ var Terrain = (function() {
       this.generate(bleed, this.columns);
    }
 
-   Terrain.prototype.generate = function(i, length) {
+   Terrain.prototype.generate = function(i, length, border) {
       while(i < length) {
          var width = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
 
@@ -24,7 +24,7 @@ var Terrain = (function() {
          }
 
          var distance = Math.ceil(128 / this.cellSize);
-         this.generateObstacle(i, i + width, distance);
+         this.generateObstacle(i, i + width, distance, border);
 
          var min = Math.floor(128 / this.cellSize);
          var max = Math.floor(256 / this.cellSize);
@@ -42,11 +42,11 @@ var Terrain = (function() {
       }
    };
 
-   Terrain.prototype.generateObstacle = function(start, end, distance) {
+   Terrain.prototype.generateObstacle = function(start, end, distance, border) {
       do {
-         var min = Math.floor(Math.random() * (this.rows - 1));
+         var min = Math.floor(Math.random() * this.rows) + border;
          var max = min + (distance + 1);
-      } while((min + max) > this.rows);
+      } while(max > (this.rows - border));
 
       for (var col = start; (col < end) && (col < this.columns); col++) {
          for (var row = 0; row < this.rows; row++) {
