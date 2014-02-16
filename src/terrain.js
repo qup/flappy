@@ -1,4 +1,3 @@
-
 var Terrain = (function() {
    var rows, columns;
    var cells;
