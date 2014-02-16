@@ -114,6 +114,7 @@ var GamePlayState = (function() {
       };
 
       var columns = Math.round(this.view.width / cellSize) * 4;
+      var rows = Math.round(this.view.height / cellSize) + 1;
 
       this.terrain = new Terrain(columns, rows, cellSize);
       this.terrainBorder = Math.floor((rows - 10) / 2);
