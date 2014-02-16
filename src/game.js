@@ -445,8 +445,8 @@ var Game = (function() {
       this.states = new Array();
       this.canvas = document.createElement('canvas');
       this.accumulator = 0;
-      this.canvas.width = 360;
-      this.canvas.height = 640;
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
 
       window.document.body.appendChild(this.canvas);
 
