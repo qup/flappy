@@ -16,7 +16,7 @@ var Terrain = (function() {
       while(i < length) {
          var width = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
 
-         while (i + width > this.columns) {
+         while (i + width > length) {
             width--;
          }
 
