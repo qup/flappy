@@ -410,6 +410,7 @@ var GamePauseState = (function() {
 var GameOverState = (function() {
    var playState;
    var highScore;
+   var elapsedTime;
 
    function GameOverState(game, playState) {
       GameState.call(this, game);
@@ -453,11 +454,18 @@ var GameOverState = (function() {
 
    GameOverState.prototype.draw = function(deltaTime) {
       var context = this.game.canvas.getContext('2d');
-      var elapsedTime = window.performance.now() / 1000;
 
       this.playState.draw(deltaTime);
 
       context.setTransform(1, 0, 0, 1, 0, 0);
+
+      this.elapsedTime += deltaTime;
+      context.globalAlpha = Math.min(0.4, this.elapsedTime / 2);
+      context.fillStyle = 'black';
+      context.rect(0, 0, context.canvas.width, context.canvas.height);
+      context.fill();
+
+      context.globalAlpha = 1.0;
 
       context.textAlign = 'center';
       context.fillStyle = 'white';
