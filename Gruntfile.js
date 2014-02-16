@@ -81,5 +81,6 @@ module.exports = function(grunt) {
    grunt.loadNpmTasks('grunt-contrib-compress');
    grunt.loadNpmTasks('grunt-contrib-connect');
 
+   grunt.registerTask('build', ['uglify', 'copy']);
    grunt.registerTask('default', ['connect', 'watch']);
 };
