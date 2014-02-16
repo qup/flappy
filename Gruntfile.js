@@ -6,9 +6,6 @@ module.exports = function(grunt) {
 
       uglify: {
          src: {
-            options: {
-               sourceMap: true,
-            },
             files: {
                'dist/<%= pkg.name %>.js': ['src/**.*js'],
             }
