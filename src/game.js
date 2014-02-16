@@ -62,6 +62,9 @@ var GameTitleState = (function() {
 var GamePlayState = (function() {
    var bird;
    var terrain;
+   var terrainBorder;
+   var view;
+
    var score;
    var input;
 
@@ -88,12 +91,28 @@ var GamePlayState = (function() {
       };
 
       var cellSize = 64;
-      var columns = Math.floor(this.game.canvas.width / 2) * 24;
-      var rows = Math.floor(this.game.canvas.height / cellSize) + 1;
 
-      this.terrain = new Terrain(columns, rows, cellSize, 15);
-      this.bird = new Bird(cellSize * 2, this.game.canvas.height / 2, 16);
-      this.bird.flap();
+      this.view = {
+         y: 0,
+         x: 0,
+         width: this.game.canvas.width,
+         height: this.game.canvas.height,
+      };
+
+      var columns = Math.round(this.view.width / cellSize) * 2;
+      var rows = Math.round(this.view.height / cellSize);
+
+      this.terrain = new Terrain(columns, rows, cellSize);
+      this.terrainBorder = Math.floor((rows - 10) / 2);
+      this.terrain.fill(0, 0, columns, rows, -1);
+      this.terrain.fill(0, 0, columns, this.terrainBorder - 1, 2);
+      this.terrain.fill(0, this.terrainBorder - 1, columns, this.terrainBorder, 1);
+      this.generationIndex = 0;
+
+      this.bird = new Bird(this.view.width - 300, this.game.canvas.height / 2, 14);
+
+      this.setView(this.bird);
+
       this.preload();
    }
 
@@ -175,9 +194,34 @@ var GamePlayState = (function() {
       }
    };
 
+   GamePlayState.prototype.setView = function(obj) {
+      this.view.y = -this.game.canvas.height;
+      this.view.x = Math.floor(obj.x) + Math.min(-75, -(this.view.width - 300));
+   };
+
    GamePlayState.prototype.step = function(deltaTime) {
       if (this.loading) {
          return;
+      }
+
+      this.setView(this.bird);
+
+      var width = Math.round(this.view.width / this.terrain.cellSize);
+      var views = Math.floor(this.terrain.columns / width);
+
+      var column = Math.round((this.view.x + this.view.width) / this.terrain.cellSize);
+      var index = (Math.floor(column / width)) % views;
+
+      if (index != this.generationIndex) {
+         var start = Math.floor(index * width);
+
+         this.terrain.fill(start, 0, start + width, this.terrain.rows, -1);
+         this.terrain.fill(start, 0, start + width, this.terrainBorder - 1, 2);
+         this.terrain.fill(start, this.terrainBorder - 1, start + width, this.terrainBorder, 1);
+         this.terrain.generate(start + 3, start + width, this.terrainBorder);
+
+         this.generationIndex = index;
+         console.info('Regenerating section %i (%i to %i)', index, start, start + width, this.terrain.columns);
       }
 
       if (this.input.flapping) {
@@ -189,11 +233,7 @@ var GamePlayState = (function() {
 
       if (this.bird.position.x > (this.terrain.columns * this.terrain.cellSize)) {
          this.bird.position.x -= this.bird.position.x;
-
-         var padding = (this.canvas.width / this.terrain.cellSize);
-
-         this.terrain.fill(0, 1, this.terrain.columns , this.terrain.rows, -1);
-         this.terrain.generate(padding, this.terrain.columns - 5);
+         console.info('Transporting player');
       }
 
       var block = this.terrain.queryAt(this.bird.x, this.bird.y);
@@ -211,13 +251,14 @@ var GamePlayState = (function() {
          }
       }
 
-      if (this.terrain.intersects(this.bird)) {
-         if (!this.bird.dead) {
+      if (!this.bird.dead) {
+         if (this.terrain.intersects(this.bird)) {
             this.bird.die();
             this.deathSound.cloneNode().play();
+            console.info('Player died, %i, %i', this.bird.x / this.terrain.cellSize, this.bird.y / this.terrain.cellSize);
+            this.game.pushState(new GameOverState(this.game, this));
          }
 
-         this.game.pushState(new GameOverState(this.game, this));
       }
    };
 
@@ -243,15 +284,13 @@ var GamePlayState = (function() {
       // Draw the background
       context.drawImage(this.backgroundImage, 0, 0, this.backgroundImage.width, this.backgroundImage.height, 0, 0, context.canvas.width, context.canvas.height);
 
-      context.translate(Math.floor(-this.bird.x), context.canvas.height);
+      context.translate( -this.view.x, -this.view.y );
       context.translate(0, -this.terrain.cellSize / 2);
-
-      context.translate( 75, 0);
 
       // Draw the map.
       // start and end indices based on where the camera is looking at.
-      var offset = Math.floor(this.bird.x / this.terrain.cellSize);
-      var count = Math.floor(this.game.canvas.width / this.terrain.cellSize) + 2;
+      var offset = Math.floor(this.view.x / this.terrain.cellSize);
+      var count = Math.floor(this.view.width / this.terrain.cellSize) + 2;
 
       context.drawTiles(this.tileSheet, this.terrain.cells, this.terrain.columns, this.terrain.rows, offset - count, 0, offset + count, this.terrain.rows, this.terrain.cellSize, this.terrain.cellSize);
 
