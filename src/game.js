@@ -31,6 +31,20 @@ var GameTitleState = (function() {
    GameTitleState.prototype.handleEvent = function(event) {
       switch(event.type) {
          case 'keydown':
+            if (event.keyCode == 32) {
+               this.game.changeState(this.playState);
+               break;
+            }
+         break;
+
+         case 'mousedown':
+            if (event.button == 0) {
+               this.game.changeState(this.playState);
+               break;
+            }
+         break;
+
+         case 'touchstart':
             this.game.changeState(this.playState);
          break;
       }
@@ -183,10 +197,24 @@ var GamePlayState = (function() {
    };
 
    GamePlayState.prototype.handleEvent = function(event) {
-      switch (event.type) {
+      switch(event.type) {
          case 'keydown':
+            if (event.keyCode == 32) {
+               this.input.flapping = true;
+               break;
+            }
+         break;
+
+         case 'mousedown':
+            if (event.button == 0) {
+               this.input.flapping = true;
+               break;
+            }
+         break;
+
+         case 'touchstart':
             this.input.flapping = true;
-            break;
+         break;
 
          case 'blur':
             this.game.pushState(new GamePauseState(this.game, this));
@@ -388,18 +416,33 @@ var GameOverState = (function() {
       this.playState = playState;
 
       this.highScore = window.localStorage.getItem('highscore') || 0;
-      if (this.highScore > this.playState.score) {
+      if (this.highScore < this.playState.score) {
          this.highScore = this.playState.score;
          window.localStorage.setItem('highscore', this.highScore);
       }
+
+      this.elapsedTime = 0;
    }
 
    GameOverState.prototype = Object.create(GameState.prototype);
    GameOverState.constructor = GameOverState;
 
    GameOverState.prototype.handleEvent = function(event) {
-      if (event.type == 'keydown') {
-         this.game.changeState(new GameTitleState(this.game));
+      switch(event.type) {
+         case 'keydown':
+            if (event.keyCode == 32) {
+               this.game.changeState(new GameTitleState(this.game));
+               break;
+            }
+         break;
+
+         case 'mousedown':
+            this.game.changeState(new GameTitleState(this.game));
+         break;
+
+         case 'touchstart':
+            this.game.changeState(new GameTitleState(this.game));
+         break;
       }
    };
 
