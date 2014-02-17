@@ -80,6 +80,8 @@ var GamePlayState = (function() {
    var view;
 
    var score;
+   var canScore;
+
    var input;
 
    var tileSheet;
@@ -204,7 +206,6 @@ var GamePlayState = (function() {
          console.info('Transporting player');
       }
 
-      var block = this.terrain.queryAt(this.bird.x, this.bird.y);
 
       if (this.bird.y > this.game.canvas.height - (this.bird.radius * 2)) {
          this.bird.velocity.y = -100;
@@ -212,12 +213,16 @@ var GamePlayState = (function() {
 
       this.bird.step(deltaTime);
 
+      var block = this.terrain.queryAt(this.bird.x, this.bird.y);
       if (block == 0) {
-         if (this.terrain.queryAt(this.bird.x, this.bird.y) < 0) {
-            this.scoreSound.play();
-            this.score++;
-         }
+         this.canScore = true;
+      } else if (block == -1 && this.canScore) {
+         this.score++;
+         this.canScore = false;
+
+         this.scoreSound.play();
       }
+
 
       if (!this.bird.dead) {
          if (this.terrain.intersects(this.bird)) {
