@@ -13,19 +13,16 @@ var Terrain = (function() {
 
    Terrain.prototype.generate = function(i, length, border) {
       while(i < length) {
-         var width = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
+         var width = Math.floor(Math.random() * (3 - 2 + 1)) + 2;
 
-         while (i + width > length) {
+         while ((i + width) > length) {
             width--;
          }
 
          var distance = Math.ceil(128 / this.cellSize);
          this.generateObstacle(i, i + width, distance, border);
 
-         var min = Math.floor(192 / this.cellSize);
-         var max = Math.floor(256 / this.cellSize);
-         var seperation = Math.floor(Math.random() * ( max - min + 1)) + min;
-
+         seperation = 3;
          i += width + seperation;
       }
    }

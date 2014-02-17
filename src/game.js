@@ -119,13 +119,13 @@ var GamePlayState = (function() {
       var rows = Math.round(this.view.height / cellSize) + 1;
 
       this.terrain = new Terrain(columns, rows, cellSize);
-      this.terrainBorder = Math.floor((rows - 10) / 2);
+      this.terrainBorder = Math.floor((rows - 6) / 2);
       this.terrain.fill(0, 0, columns, rows, -1);
       this.terrain.fill(0, 0, columns, this.terrainBorder - 1, 2);
       this.terrain.fill(0, this.terrainBorder - 1, columns, this.terrainBorder, 1);
       this.generationIndex = 0;
 
-      this.bird = new Bird(this.view.width - 300, this.game.canvas.height / 2, 16, 1.32);
+      this.bird = new Bird(this.view.width - 300, this.game.canvas.height / 2, 16, 1.31);
 
       this.setView(this.bird);
       this.input.flapping = true;
@@ -188,7 +188,7 @@ var GamePlayState = (function() {
          this.terrain.fill(start, 0, start + width, this.terrain.rows, -1);
          this.terrain.fill(start, 0, start + width, this.terrainBorder - 1, 2);
          this.terrain.fill(start, this.terrainBorder - 1, start + width, this.terrainBorder, 1);
-         this.terrain.generate(start + 4, start + width, this.terrainBorder);
+         this.terrain.generate(start + 3, start + width, this.terrainBorder);
 
          this.generationIndex = index;
          console.info('Regenerating section %i (%i to %i)', index, start, start + width, this.terrain.columns);
