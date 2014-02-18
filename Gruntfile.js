@@ -38,7 +38,7 @@ module.exports = function(grunt) {
             tasks: ['uglify:src'],
          },
 
-         assets: {
+         html: {
             files: ['src/*.html'],
             tasks: ['copy:html'],
          },
