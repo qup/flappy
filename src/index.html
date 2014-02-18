@@ -54,7 +54,9 @@
 
    <body>
       <script type='application/javascript'>
-         var game = new Game(document.body);
+         document.addEventListener('DOMContentLoaded', function() {
+            var game = new Game(document.body);
+         });
       </script>
    </body>
 </html>
