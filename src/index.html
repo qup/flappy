@@ -39,6 +39,7 @@
 
                script.addEventListener('load', function() {
                   kongregateAPI.loadAPI(function() {
+                     console.info('Kongregate loaded');
                      window.kongregate = kongregateAPI.getAPI();
                   });
                });

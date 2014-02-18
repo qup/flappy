@@ -352,6 +352,7 @@ var GameOverState = (function() {
          window.localStorage.setItem('highscore', this.highScore);
       }
 
+      console.info('Submitting score');
       this.game.submitScore('score', this.playState.score);
 
       this.elapsedTime = 0;
@@ -617,8 +618,11 @@ var Game = (function() {
    Game.prototype.submitScore = function(key, value) {
       if (window.kongregate) {
          kongregate.stats.submit(key, value);
-         console.debug('Kongregate score submitted');
+         console.info('Kongregate score submitted');
+      } else {
+         console.info('No score API available');
       }
    };
+
    return Game;
 })();
