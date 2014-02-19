@@ -263,7 +263,7 @@ var GamePlayState = (function() {
       // Draw the map.
       // start and end indices based on where the camera is looking at.
       var offset = Math.floor(this.view.x / this.terrain.cellSize);
-      var count = Math.floor(this.view.width / this.terrain.cellSize) + 2;
+      var count = Math.round(this.view.width / this.terrain.cellSize) + 2;
 
       context.drawTiles(this.tileSheet, this.terrain.cells, this.terrain.columns, this.terrain.rows, offset - count, 0, offset + count, this.terrain.rows, this.terrain.cellSize, this.terrain.cellSize);
 
