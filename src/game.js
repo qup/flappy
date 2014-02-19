@@ -622,7 +622,7 @@ var Game = (function() {
 
    Game.prototype.submitScore = function(key, value) {
       if (window.kongregate) {
-         kongregate.stats.submit(key, value);
+         kongregate.stats.submit('leaderboard_' + key, value);
          console.info('Kongregate score submitted');
       } else {
          console.info('No score API available');
