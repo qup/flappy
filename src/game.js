@@ -98,6 +98,8 @@ var GamePlayState = (function() {
 
    var loaded;
 
+   var accumulator;
+
    function GamePlayState(game) {
       GameState.call(this, game);
 
@@ -137,6 +139,8 @@ var GamePlayState = (function() {
       this.flapSound = this.game.assets['sounds/flap'];
       this.deathSound = this.game.assets['sounds/death'];
       this.scoreSound = this.game.assets['sounds/score'];
+
+      this.accumulator = 0;
    }
 
    GamePlayState.prototype = Object.create(GameState.prototype);
@@ -174,6 +178,16 @@ var GamePlayState = (function() {
    };
 
    GamePlayState.prototype.step = function(deltaTime) {
+      var dt = 1 / 120;
+      this.accumulator += deltaTime;
+
+      while (this.accumulator >= dt) {
+         this.accumulator -= dt;
+         this.integrate(dt);
+      }
+   }
+
+   GamePlayState.prototype.integrate = function(deltaTime) {
       this.setView(this.bird);
 
       var width = Math.round(this.view.width / this.terrain.cellSize);
@@ -422,8 +436,6 @@ var Game = (function() {
    var element;
 
    var time;
-   var accumulator;
-
    var assets;
 
    //
@@ -595,17 +607,10 @@ var Game = (function() {
          time = window.performance.now();
       }
 
-      var dt = 1 / 60;
       var frameTime = (time - (this.time || time)) / 1000;
       this.time = time;
 
-      this.accumulator += frameTime;
-
-      while (this.accumulator >= dt) {
-         this.accumulator -= dt;
-         this.step(dt);
-      }
-
+      this.step(frameTime);
       this.draw(frameTime);
 
       if (window.document.hasFocus()) {
