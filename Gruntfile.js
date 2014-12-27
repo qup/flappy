@@ -24,9 +24,9 @@ module.exports = function(grunt) {
             dest: 'dist/',
          },
 
-         assets: {
+         asset: {
             expand: true,
-            cwd: 'assets/',
+            cwd: 'asset/',
             src: ['**'],
             dest: 'dist/',
          }
@@ -47,9 +47,9 @@ module.exports = function(grunt) {
             tasks: ['copy:html'],
          },
 
-         assets: {
-            files: ['assets/**/*'],
-            tasks: ['copy:assets'],
+         asset: {
+            files: ['asset/**/*'],
+            tasks: ['copy:asset'],
          },
       },
 
