@@ -13,7 +13,7 @@
     "url": "https://github.com/qup/flappy.git"
   },
 
-  "author": "Casper Beyer",
+  "author": "Casper Beyer <caspervonb@qup.io>",
   "license": "BSD",
   "bugs": {
     "url": "https://github.com/qup/flappy/issues"
