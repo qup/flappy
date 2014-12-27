@@ -83,6 +83,6 @@ module.exports = function(grunt) {
    grunt.loadNpmTasks('grunt-contrib-connect');
 
    grunt.registerTask('build', ['uglify', 'copy']);
-   grunt.registerTask('server', ['connect', 'watch']);
-   grunt.registerTask('default', ['connect', 'watch']);
+   grunt.registerTask('server', ['connect', 'watch'])
+   grunt.registerTask('default', ['build', 'server']);
 };
