@@ -16,6 +16,30 @@ module.exports = function(grunt) {
          }
       },
 
+      metalsmith: {
+        content: {
+          options: {
+            metadata: {
+              pkg: grunt.file.readJSON('package.json'),
+              env: process.env,
+            },
+
+            plugins: {
+              'metalsmith-in-place': {
+                engine: 'swig',
+              },
+              
+              'metalsmith-templates': {
+                engine: 'swig',
+              }
+            }
+          },
+
+          src: 'content',
+          dest: 'dist'
+        }
+      },
+
       copy: {
          html: {
             expand: true,
@@ -76,13 +100,14 @@ module.exports = function(grunt) {
    });
 
    grunt.loadNpmTasks('grunt-contrib-clean');
+   grunt.loadNpmTasks('grunt-metalsmith');
    grunt.loadNpmTasks('grunt-contrib-uglify');
    grunt.loadNpmTasks('grunt-contrib-copy');
    grunt.loadNpmTasks('grunt-contrib-watch');
    grunt.loadNpmTasks('grunt-contrib-compress');
    grunt.loadNpmTasks('grunt-contrib-connect');
 
-   grunt.registerTask('build', ['uglify', 'copy']);
+   grunt.registerTask('build', ['metalsmith', 'uglify', 'copy']);
    grunt.registerTask('server', ['connect', 'watch']);
    grunt.registerTask('default', ['build', 'server']);
 };
