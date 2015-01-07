@@ -1,4 +1,6 @@
-var TileSheet = (function() {
+import { EventDispatcher } from './event_dispatcher';
+
+export var TileSheet = (function() {
    var _image;
    var _src;
 

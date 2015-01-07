@@ -1,4 +1,6 @@
-var SpriteSheet = (function () {
+import { EventDispatcher } from './event_dispatcher';
+
+export var SpriteSheet = (function () {
    var _image;
    var _frames;
    var _animations;

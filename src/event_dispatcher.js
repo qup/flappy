@@ -1,4 +1,4 @@
-var EventDispatcher = (function() {
+export var EventDispatcher = (function() {
    function EventDispatcher() {
       this.events = [];
    }

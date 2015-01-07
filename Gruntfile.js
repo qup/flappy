@@ -4,14 +4,19 @@ module.exports = function(grunt) {
 
       clean: ['dist/'],
 
-      uglify: {
+      browserify: {
          options: {
             banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
-               '<%= grunt.template.today("yyyy-mm-dd") %> */'
+               '<%= grunt.template.today("yyyy-mm-dd") %> */',
+
+            browserifyOptions: {
+              standalone: 'flappy',
+              transform: ['6to5ify']
+            },
          },
          src: {
             files: {
-               'dist/<%= pkg.name %>.js': ['src/**.*js'],
+               'dist/<%= pkg.name %>.js': ['src/index.js'],
             }
          }
       },
@@ -39,7 +44,7 @@ module.exports = function(grunt) {
 
          src: {
             files: ['src/**/*.js'],
-            tasks: ['uglify:src'],
+            tasks: ['browserify'],
          },
 
          html: {
@@ -76,13 +81,13 @@ module.exports = function(grunt) {
    });
 
    grunt.loadNpmTasks('grunt-contrib-clean');
-   grunt.loadNpmTasks('grunt-contrib-uglify');
+   grunt.loadNpmTasks('grunt-browserify');
    grunt.loadNpmTasks('grunt-contrib-copy');
    grunt.loadNpmTasks('grunt-contrib-watch');
    grunt.loadNpmTasks('grunt-contrib-compress');
    grunt.loadNpmTasks('grunt-contrib-connect');
 
-   grunt.registerTask('build', ['uglify', 'copy']);
+   grunt.registerTask('build', ['browserify', 'copy']);
    grunt.registerTask('server', ['connect', 'watch']);
    grunt.registerTask('default', ['build', 'server']);
 };

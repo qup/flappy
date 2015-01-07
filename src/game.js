@@ -1,4 +1,11 @@
-var GameState = (function() {
+import { SpriteSheet } from './sprite_sheet';
+import { TileSheet } from './tile_sheet';
+import { Howl } from './howler';
+import { Terrain } from './terrain';
+import { Bird } from './bird';
+import { Vec2 } from './vec2';
+
+export var GameState = (function() {
    var game;
 
    function GameState(game) {
@@ -16,7 +23,7 @@ var GameState = (function() {
    return GameState;
 })();
 
-var GameTitleState = (function() {
+export var GameTitleState = (function() {
    var playState;
 
    function GameTitleState(game) {
@@ -73,7 +80,7 @@ var GameTitleState = (function() {
    return GameTitleState;
 })();
 
-var GamePlayState = (function() {
+export var GamePlayState = (function() {
    var bird;
    var terrain;
    var terrainBorder;
@@ -311,7 +318,7 @@ var GamePlayState = (function() {
    return GamePlayState;
 })();
 
-var GamePauseState = (function() {
+export var GamePauseState = (function() {
    var playState;
 
    function GamePauseState(game, playState) {
@@ -350,7 +357,7 @@ var GamePauseState = (function() {
    return GamePauseState;
 })();
 
-var GameOverState = (function() {
+export var GameOverState = (function() {
    var playState;
    var highScore;
    var elapsedTime;
@@ -430,7 +437,7 @@ var GameOverState = (function() {
    return GameOverState;
 })();
 
-var Game = (function() {
+export var Game = (function() {
    var canvas;
    var states;
    var element;

@@ -1,4 +1,6 @@
-var Bird = (function() {
+import { Vec2 } from './vec2';
+
+export var Bird = (function() {
    var position;
    var velocity;
    var radius;
