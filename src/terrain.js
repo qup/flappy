@@ -1,9 +1,5 @@
-export var Terrain = (function() {
-   var rows, columns;
-   var cells;
-   var cellSize;
-
-   function Terrain(columns, rows, cellSize) {
+export class Terrain {
+   constructor(columns, rows, cellSize) {
       this.rows = rows;
       this.columns = columns;
       this.cellSize = cellSize;
@@ -11,7 +7,7 @@ export var Terrain = (function() {
       this.fill(0, 0, this.columns, this.rows, -1);
    }
 
-   Terrain.prototype.generate = function(i, length, border) {
+   generate(i, length, border) {
       while(i < length) {
          var width = Math.floor(Math.random() * (3 - 2 + 1)) + 2;
 
@@ -27,15 +23,15 @@ export var Terrain = (function() {
       }
    }
 
-   Terrain.prototype.fill = function(x, y, width, height, value) {
+   fill(x, y, width, height, value) {
       for (var col = x; col < width; col++) {
          for (var row = y; row < height; row++) {
             this.cells[row * this.columns + col] = value;
          }
       }
-   };
+   }
 
-   Terrain.prototype.generateObstacle = function(start, end, distance, border) {
+   generateObstacle(start, end, distance, border) {
       do {
          var min = Math.floor(Math.random() * this.rows) + border;
          var max = min + (distance + 1);
@@ -101,28 +97,25 @@ export var Terrain = (function() {
             this.cells[row * this.columns + col] = value;
          }
       }
-   };
+   }
 
-   // Returns the value at the given world coordiantes.
-   //
-   Terrain.prototype.queryAt = function(x, y) {
+   queryAt(x, y) {
       var col = Math.floor(x / this.cellSize);
       var row = Math.floor(y / this.cellSize);
 
       return this.valueAt(col, row);
    }
 
-   // Returns the value at the given cell coordinates.
-   Terrain.prototype.valueAt = function(x, y) {
+   valueAt(x, y) {
       return this.cells[this.indexAt(x, y)];
-   };
+   }
 
    // Returns the index of the given cell coordinates
-   Terrain.prototype.indexAt = function(col, row) {
+   indexAt(col, row) {
       return row * this.columns + col;
-   };
+   }
 
-   Terrain.prototype.intersects = function(obj) {
+   intersects(obj) {
       // determine which cell the object is in.
       var col = Math.floor(obj.x / this.cellSize);
       var row = Math.floor(obj.y / this.cellSize);
@@ -148,9 +141,7 @@ export var Terrain = (function() {
             }
          }
       }
-
       return false;
-   };
+   }
+}
 
-   return Terrain;
-})();

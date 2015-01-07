@@ -5,38 +5,40 @@ import { Terrain } from './terrain';
 import { Bird } from './bird';
 import { Vec2 } from './vec2';
 
-export var GameState = (function() {
-   var game;
-
-   function GameState(game) {
+export class GameState {
+   constructor(game) {
       this.game = game;
    }
-
-   GameState.prototype.pause = function() {};
-   GameState.prototype.resume = function() {};
-   GameState.prototype.dispose = function() {};
-
-   GameState.prototype.handleEvent = function(event) {};
-   GameState.prototype.draw = function(deltaTime) {};
-   GameState.prototype.step = function(deltaTime) {};
-
-   return GameState;
-})();
-
-export var GameTitleState = (function() {
-   var playState;
-
-   function GameTitleState(game) {
-      GameState.call(this, game);
-
-      this.playState = new GamePlayState(this.game);
+   
+   pause() {
+   }
+   
+   resume() {
+   }
+   
+   dispose() {
+   }
+   
+   handleEvent(event) {
+   }
+   
+   step(time) {
    }
 
-   GameTitleState.prototype = Object.create(GameState.prototype);
-   GameTitleState.constructor = GameTitleState;
+   draw(time) {
+   }
+}
 
-   GameTitleState.prototype.handleEvent = function(event) {
-      switch(event.type) {
+
+export class GameTitleState extends GameState {
+   constructor(game) {
+      super(game);
+
+      this.playState = new GamePlayState(game);
+   }
+
+   handleEvent(event) {
+    switch(event.type) {
          case 'keydown':
             if (event.keyCode == 32) {
                this.game.changeState(this.playState);
@@ -56,12 +58,12 @@ export var GameTitleState = (function() {
          break;
       }
    }
-
-   GameTitleState.prototype.draw = function(deltaTime) {
-      var context = this.game.canvas.getContext('2d');
+   
+   draw(time) {
+    var context = this.game.canvas.getContext('2d');
 
       // Draw the play state.
-      this.playState.draw(deltaTime);
+      this.playState.draw(time);
 
       // Draw our title overlay.
       context.setTransform(1, 0, 0, 1, 0, 0);
@@ -75,41 +77,13 @@ export var GameTitleState = (function() {
       context.font = '24px munro';
       context.fillStyle = 'white';
       context.fillText('tap to play', context.canvas.width / 2, 150);
-   };
+   }
+}
 
-   return GameTitleState;
-})();
-
-export var GamePlayState = (function() {
-   var bird;
-   var terrain;
-   var terrainBorder;
-   var view;
-
-   var score;
-   var canScore;
-
-   var input;
-
-   var tileSheet;
-   var spriteSheet;
-   var spriteAnimationName;
-   var spriteAnimationFrame;
-   var spriteAnimationTime;
-
-   var backgroundImage;
-
-   var flapSound;
-   var deathSound;
-   var scoreSound;
-
-   var loaded;
-
-   var accumulator;
-
-   function GamePlayState(game) {
-      GameState.call(this, game);
-
+export class GamePlayState extends GameState {
+   constructor(game) {
+      super(game);
+      
       this.score = 0;
       this.input = {
          flapping: false,
@@ -149,12 +123,9 @@ export var GamePlayState = (function() {
 
       this.accumulator = 0;
    }
-
-   GamePlayState.prototype = Object.create(GameState.prototype);
-   GamePlayState.constructor = GamePlayState;
-
-   GamePlayState.prototype.handleEvent = function(event) {
-      switch(event.type) {
+   
+   handleEvent(event) {
+     switch(event.type) {
          case 'keydown':
             if (event.keyCode == 32) {
                this.input.flapping = true;
@@ -177,25 +148,25 @@ export var GamePlayState = (function() {
             this.game.pushState(new GamePauseState(this.game, this));
          break;
       }
-   };
-
-   GamePlayState.prototype.setView = function(obj) {
+   }
+   
+   setView(obj) {
       this.view.y = -this.game.canvas.height;
       this.view.x = Math.floor(obj.x) + Math.min(-75, -(this.view.width - 300));
-   };
-
-   GamePlayState.prototype.step = function(deltaTime) {
+   }
+   
+   step(time) {
       var dt = 1 / 120;
-      this.accumulator += deltaTime;
+      this.accumulator += time;
 
       while (this.accumulator >= dt) {
          this.accumulator -= dt;
          this.integrate(dt);
       }
    }
-
-   GamePlayState.prototype.integrate = function(deltaTime) {
-      this.setView(this.bird);
+   
+   integrate(time) {
+     this.setView(this.bird);
 
       var width = Math.round(this.view.width / this.terrain.cellSize);
       var views = Math.floor(this.terrain.columns / width);
@@ -232,7 +203,7 @@ export var GamePlayState = (function() {
          this.bird.velocity.y = -100;
       }
 
-      this.bird.step(deltaTime);
+      this.bird.step(time);
 
       var block = this.terrain.queryAt(this.bird.x, this.bird.y);
       if (block == 0) {
@@ -254,9 +225,9 @@ export var GamePlayState = (function() {
          }
 
       }
-   };
-
-   GamePlayState.prototype.draw = function(deltaTime) {
+   }
+   
+   draw(time) {
       var context = this.game.canvas.getContext('2d');
 
       context.canvas.width = context.canvas.width;
@@ -289,7 +260,7 @@ export var GamePlayState = (function() {
          this.spriteAnimationTime = 0;
       }
 
-      this.spriteAnimationTime += deltaTime;
+      this.spriteAnimationTime += time;
       if (this.spriteAnimationTime > 0.05) {
          this.spriteAnimationFrame++;
          this.spriteAnimationTime = 0;
@@ -313,38 +284,31 @@ export var GamePlayState = (function() {
          context.fillStyle = 'white';
          context.fillText(this.score.toString(), context.canvas.width / 2, 100);
       }
-   };
+   }
+}
 
-   return GamePlayState;
-})();
-
-export var GamePauseState = (function() {
-   var playState;
-
-   function GamePauseState(game, playState) {
-      GameState.call(this, game);
-
+export class GamePauseState extends GameState {
+   constructor(game, playState) {
+      super(game);
+      
       this.playState = playState;
       this.elapsedTime = 0;
    }
-
-   GamePauseState.prototype = Object.create(GameState.prototype);
-   GamePauseState.constructor = GamePauseState;
-
-   GamePauseState.prototype.handleEvent = function(event) {
+   
+   handleEvent(event) {
       switch (event.type) {
          case 'focus':
             // Pop self, thus resuming the game play state.
             this.game.popState();
          break;
       }
-   };
-
-   GamePauseState.prototype.draw = function(deltaTime) {
+   }
+   
+   draw(time) {
       var context = this.game.canvas.getContext('2d');
       var elapsedTime = window.performance.now() / 1000;
 
-      this.playState.draw(deltaTime);
+      this.playState.draw(time);
 
       context.setTransform(1, 0, 0, 1, 0, 0);
       context.fillStyle = 'white';
@@ -352,19 +316,11 @@ export var GamePauseState = (function() {
 
       context.font = '64px munro';
       context.fillText('Pause', context.canvas.width / 2, context.canvas.height / 2 - 100);
-   };
+   }
+}
 
-   return GamePauseState;
-})();
-
-export var GameOverState = (function() {
-   var playState;
-   var highScore;
-   var elapsedTime;
-
-   function GameOverState(game, playState) {
-      GameState.call(this, game);
-
+export class GameOverState extends GameState {
+   constructor(game, playState) {
       this.playState = playState;
 
       this.highScore = window.localStorage.getItem('highscore') || 0;
@@ -378,12 +334,10 @@ export var GameOverState = (function() {
 
       this.elapsedTime = 0;
    }
-
-   GameOverState.prototype = Object.create(GameState.prototype);
-   GameOverState.constructor = GameOverState;
-
-   GameOverState.prototype.handleEvent = function(event) {
-      switch(event.type) {
+   
+   
+   handleEvent(event) {
+     switch(event.type) {
          case 'keydown':
             if (event.keyCode == 32) {
                this.game.changeState(new GameTitleState(this.game));
@@ -399,20 +353,20 @@ export var GameOverState = (function() {
             this.game.changeState(new GameTitleState(this.game));
          break;
       }
-   };
-
-   GameOverState.prototype.step = function(deltaTime) {
-      this.playState.step(deltaTime);
-   };
-
-   GameOverState.prototype.draw = function(deltaTime) {
+   }
+   
+   step(time) {
+      this.playState.step(time);
+   }
+   
+   draw(time) {
       var context = this.game.canvas.getContext('2d');
 
-      this.playState.draw(deltaTime);
+      this.playState.draw(time);
 
       context.setTransform(1, 0, 0, 1, 0, 0);
 
-      this.elapsedTime += deltaTime;
+      this.elapsedTime += time;
       context.globalAlpha = Math.min(0.4, this.elapsedTime / 2);
       context.fillStyle = 'black';
       context.rect(0, 0, context.canvas.width, context.canvas.height);
@@ -432,22 +386,11 @@ export var GameOverState = (function() {
 
       context.fillText('Best', context.canvas.width / 2, 300);
       context.fillText(this.highScore.toString(), context.canvas.width / 2, 345);
-   };
+   }   
+}
 
-   return GameOverState;
-})();
-
-export var Game = (function() {
-   var canvas;
-   var states;
-   var element;
-
-   var time;
-   var assets;
-
-   //
-   //
-   function Game(element) {
+export class Game {
+   constructor(element) {
       this.states = new Array();
       this.canvas = document.createElement('canvas');
       this.accumulator = 0;
@@ -481,8 +424,9 @@ export var Game = (function() {
       this.assets = new Object();
       this.preload();
    }
-
-   Game.prototype.preload = function() {
+   
+   
+   preload() {
       var filesLoaded = 0;
       var filesTotal = 0;
 
@@ -540,18 +484,13 @@ export var Game = (function() {
       this.assets['sounds/flap'] = loadAudio('sounds/flap.wav');
       this.assets['sounds/death'] = loadAudio('sounds/death.wav');
       this.assets['sounds/score'] = loadAudio('sounds/score.wav');
-   };
+   }
 
-
-   //
-   //
-   Game.prototype.pushState = function(state) {
+   pushState(state) {
       this.states.push(state);
-   };
+   }
 
-   //
-   //
-   Game.prototype.popState = function() {
+   popState() {
       if (this.states.length > 0) {
          this.states[this.states.length - 1].dispose();
          var state = this.states.pop();
@@ -562,54 +501,40 @@ export var Game = (function() {
 
          return state;
       }
-   };
+   }
 
-   //
-   //
-   Game.prototype.changeState = function(state) {
+   changeState(state) {
       while(this.states.length > 0) {
          this.states[this.states.length - 1].dispose();
          this.states.pop();
       }
 
       this.pushState(state);
-   };
+   }
 
-   Object.defineProperty(Game.prototype, 'currentState', {
-      get: function () {
-         return this.states[this.states.length - 1];
-      },
-      enumerable: true,
-      configurable: true
-   });
+   get currentState() {
+      return this.states[this.states.length - 1];
+   }
 
-   //
-   //
-   Game.prototype.handleEvent = function(event) {
+   handleEvent(event) {
       if (this.states.length > 0) {
          this.states[this.states.length - 1].handleEvent(event);
       }
-   };
+   }
 
-   //
-   //
-   Game.prototype.draw = function(deltaTime) {
+   draw(time) {
       if (this.states.length > 0) {
-         this.states[this.states.length - 1].draw(deltaTime);
+         this.states[this.states.length - 1].draw(time);
       }
-   };
+   }
 
-   //
-   //
-   Game.prototype.step = function(deltaTime) {
+   step(time) {
       if (this.states.length > 0) {
-         this.states[this.states.length - 1].step(deltaTime);
+         this.states[this.states.length - 1].step(time);
       }
-   };
+   }
 
-   //
-   //
-   Game.prototype.tick = function(time) {
+   tick(time) {
       if (time == undefined) {
          time = window.performance.now();
       }
@@ -625,16 +550,14 @@ export var Game = (function() {
       } else {
          window.setTimeout(Game.prototype.tick.bind(this), 500);
       }
-   };
+   }
 
-   Game.prototype.submitScore = function(key, value) {
+   submitScore(key, value) {
       if (window.kongregate) {
          kongregate.stats.submit('leaderboard_' + key, value);
          console.info('Kongregate score submitted');
       } else {
          console.info('No score API available');
       }
-   };
-
-   return Game;
-})();
+   }
+}
