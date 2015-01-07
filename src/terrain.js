@@ -22,7 +22,7 @@ export var Terrain = (function() {
          var distance = Math.ceil(128 / this.cellSize);
          this.generateObstacle(i, i + width, distance, border);
          
-         seperation = 3;
+         var seperation = 3;
          i += width + seperation;
       }
    }
