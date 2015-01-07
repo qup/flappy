@@ -1,6 +1,6 @@
 import { SpriteSheet } from './sprite_sheet';
 import { TileSheet } from './tile_sheet';
-import { Howl } from './howler';
+import { Howl } from 'howler';
 import { Terrain } from './terrain';
 import { Bird } from './bird';
 import { Vec2 } from './vec2';
