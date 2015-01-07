@@ -321,6 +321,8 @@ export class GamePauseState extends GameState {
 
 export class GameOverState extends GameState {
    constructor(game, playState) {
+      super(game, playState);
+
       this.playState = playState;
 
       this.highScore = window.localStorage.getItem('highscore') || 0;
