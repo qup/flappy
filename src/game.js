@@ -18,31 +18,37 @@ export class Game {
 
       window.document.body.appendChild(this.canvas);
 
-      var events = [
-         'keydown',
-         'keyup',
-         'mousedown',
-         'mousemove',
-         'touchstart',
-         'touchmove',
-         'touchend',
-         'blur',
-         'focus',
-         'focusin',
-         'focusout'
-      ];
+      var target = this;
+      ['keydown', 'keyup', 'keypress'].forEach(function(event) {
+         window.addEventListener(event, function(data) {
+            target.delegate(event);
+         });
+      });
 
-      for (var i = 0; i < events.length; i++) {
-         window.addEventListener(events[i], Game.prototype.handleEvent.bind(this), true);
-      }
+      ['mousedown', 'mouseup', 'mousepress'].forEach(function(event) {
+         window.addEventListener(event, function(data) {
+            target.delegate(event);
+         });
+      });
+
+      ['touchstart', 'touchend', 'touchmove'].forEach(function(event) {
+         window.addEventListener(event, function(data) {
+            target.delegate(event);
+         });
+      });
+      
+      ['blur', 'focus', 'focusin', 'focusout'].forEach(function(event) {
+         window.addEventListener(event, function(data) {
+            target.delegate(event);
+         });
+      });
 
       window.requestAnimationFrame(Game.prototype.tick.bind(this));
 
       this.assets = new Object();
       this.preload();
    }
-   
-   
+
    preload() {
       var filesLoaded = 0;
       var filesTotal = 0;
@@ -133,9 +139,9 @@ export class Game {
       return this.states[this.states.length - 1];
    }
 
-   handleEvent(event) {
+   delegate(event, ...args) {
       if (this.states.length > 0) {
-         this.states[this.states.length - 1].handleEvent(event);
+         this.states[this.states.length - 1].emit(event, args);
       }
    }
 

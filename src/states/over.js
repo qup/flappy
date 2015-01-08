@@ -1,5 +1,4 @@
 import { GameState } from './state';
-import { GameTitleState } from './title';
 
 export class GameOverState extends GameState {
    constructor(game, playState) {
@@ -17,27 +16,12 @@ export class GameOverState extends GameState {
       this.game.submitScore('score', this.playState.score);
 
       this.elapsedTime = 0;
+
+      this.on('keydown', function(key) {
+         this.game.changeState(new GameTitleState(this.game));
+      });
    }
 
-   handleEvent(event) {
-     switch(event.type) {
-         case 'keydown':
-            if (event.keyCode == 32) {
-               this.game.changeState(new GameTitleState(this.game));
-               break;
-            }
-         break;
-
-         case 'mousedown':
-            this.game.changeState(new GameTitleState(this.game));
-         break;
-
-         case 'touchstart':
-            this.game.changeState(new GameTitleState(this.game));
-         break;
-      }
-   }
-   
    step(time) {
       this.playState.step(time);
    }
@@ -71,3 +55,5 @@ export class GameOverState extends GameState {
       context.fillText(this.highScore.toString(), context.canvas.width / 2, 345);
    }   
 }
+
+import { GameTitleState } from './title';

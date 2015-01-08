@@ -1,5 +1,7 @@
 import { GameState } from './state';
+import { GamePauseState } from './pause';
 import { GameOverState } from './over';
+
 import { Bird } from '../bird';
 import { Terrain } from '../terrain';
 
@@ -45,34 +47,16 @@ export class GamePlayState extends GameState {
       this.scoreSound = this.game.assets['sounds/score'];
 
       this.accumulator = 0;
+      
+      this.on('keydown', function(key) {
+         this.input.flapping = true;
+      });
+
+      this.on('blur', function(key) {
+         this.game.pushState(new GamePauseState(this.game, this));
+      });
    }
-   
-   handleEvent(event) {
-     switch(event.type) {
-         case 'keydown':
-            if (event.keyCode == 32) {
-               this.input.flapping = true;
-               break;
-            }
-         break;
 
-         case 'mousedown':
-            if (event.button == 0) {
-               this.input.flapping = true;
-               break;
-            }
-         break;
-
-         case 'touchstart':
-            this.input.flapping = true;
-         break;
-
-         case 'blur':
-            this.game.pushState(new GamePauseState(this.game, this));
-         break;
-      }
-   }
-   
    setView(obj) {
       this.view.y = -this.game.canvas.height;
       this.view.x = Math.floor(obj.x) + Math.min(-75, -(this.view.width - 300));

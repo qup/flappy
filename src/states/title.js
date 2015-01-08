@@ -5,30 +5,12 @@ export class GameTitleState extends GameState {
    constructor(game) {
       super(game);
       this.playState = new GamePlayState(game);
+      
+      this.on('keydown', function(key) {
+         this.game.changeState(this.playState);
+      });
    }
 
-   handleEvent(event) {
-    switch(event.type) {
-         case 'keydown':
-            if (event.keyCode == 32) {
-               this.game.changeState(this.playState);
-               break;
-            }
-         break;
-
-         case 'mousedown':
-            if (event.button == 0) {
-               this.game.changeState(this.playState);
-               break;
-            }
-         break;
-
-         case 'touchstart':
-            this.game.changeState(this.playState);
-         break;
-      }
-   }
-   
    draw(time) {
     var context = this.game.canvas.getContext('2d');
 

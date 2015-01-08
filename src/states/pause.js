@@ -6,15 +6,10 @@ export class GamePauseState extends GameState {
       
       this.playState = playState;
       this.elapsedTime = 0;
-   }
-   
-   handleEvent(event) {
-      switch (event.type) {
-         case 'focus':
-            // Pop self, thus resuming the game play state.
-            this.game.popState();
-         break;
-      }
+      
+      this.on('focus', function() {
+         this.game.popState();
+      });
    }
    
    draw(time) {

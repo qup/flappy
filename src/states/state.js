@@ -1,4 +1,6 @@
-export class GameState {
+import { EventEmitter } from 'events';
+
+export class GameState extends EventEmitter {
    constructor(game) {
       this.game = game;
    }
