@@ -42,6 +42,14 @@ export class Window extends EventEmitter {
       return global.window.cancelAnimationFrame(requestId);
    }
 
+   get title() {
+      return global.window.document.title;
+   }
+
+   set title(value) {
+      global.window.document.title = value;
+   }
+
    get focused() {
       return global.window.document.hasFocus;
    }
