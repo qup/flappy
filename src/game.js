@@ -5,6 +5,7 @@ import { Terrain } from './terrain';
 import { Bird } from './bird';
 import { Vec2 } from './vec2';
 import { GameTitleState } from './states';
+import window from './window';
 
 export class Game {
    constructor(element) {
@@ -16,34 +17,16 @@ export class Game {
       this.canvas.width = (this.element) ? this.element.clientWidth : window.innerWidth;
       this.canvas.height = (this.element) ? this.element.clientHeight : window.innerHeight;
 
-      window.document.body.appendChild(this.canvas);
+      global.window.document.body.appendChild(this.canvas);
 
       var target = this;
-      ['keydown', 'keyup', 'keypress'].forEach(function(event) {
-         window.addEventListener(event, function(data) {
-            target.delegate(event);
-         });
-      });
-
-      ['mousedown', 'mouseup', 'mousepress'].forEach(function(event) {
-         window.addEventListener(event, function(data) {
-            target.delegate(event);
-         });
-      });
-
-      ['touchstart', 'touchend', 'touchmove'].forEach(function(event) {
-         window.addEventListener(event, function(data) {
-            target.delegate(event);
+      ['keydown'].forEach(function(event) {
+         window.on('keydown', function(...args) {
+            target.delegate(event, args);
          });
       });
       
-      ['blur', 'focus', 'focusin', 'focusout'].forEach(function(event) {
-         window.addEventListener(event, function(data) {
-            target.delegate(event);
-         });
-      });
-
-      window.requestAnimationFrame(Game.prototype.tick.bind(this));
+      window.requestRedraw(Game.prototype.tick.bind(this));
 
       this.assets = new Object();
       this.preload();
@@ -141,6 +124,7 @@ export class Game {
 
    delegate(event, ...args) {
       if (this.states.length > 0) {
+         console.log(event, args);
          this.states[this.states.length - 1].emit(event, args);
       }
    }
@@ -159,7 +143,7 @@ export class Game {
 
    tick(time) {
       if (time == undefined) {
-         time = window.performance.now();
+         time = global.window.performance.now();
       }
 
       var frameTime = (time - (this.time || time)) / 1000;
@@ -168,10 +152,10 @@ export class Game {
       this.step(frameTime);
       this.draw(frameTime);
 
-      if (window.document.hasFocus()) {
-         window.requestAnimationFrame(Game.prototype.tick.bind(this));
+      if (window.focused) {
+         window.requestRedraw(Game.prototype.tick.bind(this));
       } else {
-         window.setTimeout(Game.prototype.tick.bind(this), 500);
+         global.window.setTimeout(Game.prototype.tick.bind(this), 500);
       }
    }
 
