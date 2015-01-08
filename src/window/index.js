@@ -42,6 +42,14 @@ export class Window extends EventEmitter {
       return global.window.cancelAnimationFrame(requestId);
    }
 
+   requestFullscreen() {
+      return global.window.requestFullscreen();
+   }
+
+   cancelFullscreen() {
+      return global.window.cancelFullscreen();
+   }
+
    get title() {
       return global.window.document.title;
    }
