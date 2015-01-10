@@ -1,13 +1,13 @@
-import { GameState } from './state';
-import { GamePlayState } from './play';
+import { Screen } from './screen';
+import { PlayScreen } from './play';
 
-export class GameTitleState extends GameState {
+export class TitleScreen extends Screen {
    constructor(game) {
       super(game);
-      this.playState = new GamePlayState(game);
-      
+      this.playState = new PlayScreen(game);
+
       this.on('keydown', function(key) {
-         this.game.changeState(this.playState);
+         this.game.changeScreen(this.playState);
       });
    }
 

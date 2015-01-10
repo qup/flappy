@@ -4,15 +4,14 @@ import { Howl } from 'howler';
 import { Terrain } from './terrain';
 import { Bird } from './bird';
 import { Vec2 } from './vec2';
-import { GameTitleState } from './states';
+import { TitleScreen } from './screens';
 
 export class Game {
    constructor(element) {
-      this.states = new Array();
+      this.screens = new Array();
       this.canvas = document.createElement('canvas');
       this.accumulator = 0;
       this.element = element;
-
       this.canvas.width = (this.element) ? this.element.clientWidth : window.innerWidth;
       this.canvas.height = (this.element) ? this.element.clientHeight : window.innerHeight;
 
@@ -58,7 +57,7 @@ export class Game {
          filesLoaded++;
 
          if (filesLoaded >= filesTotal) {
-            that.pushState(new GameTitleState(that));
+            that.pushScreen(new TitleScreen(that));
          }
       };
 
@@ -109,51 +108,51 @@ export class Game {
       this.assets['sounds/score'] = loadAudio('sounds/score.wav');
    }
 
-   pushState(state) {
-      this.states.push(state);
+   pushScreen(screen) {
+      this.screens.push(screen);
    }
 
-   popState() {
-      if (this.states.length > 0) {
-         this.states[this.states.length - 1].dispose();
-         var state = this.states.pop();
+   popScreen() {
+      if (this.screens.length > 0) {
+         this.screens[this.screens.length - 1].dispose();
+         var screen = this.screens.pop();
 
-         if (this.states.length > 0) {
-            this.states[this.states.length - 1].resume();
+         if (this.screens.length > 0) {
+            this.screens[this.screens.length - 1].resume();
          }
 
-         return state;
+         return screen;
       }
    }
 
-   changeState(state) {
-      while(this.states.length > 0) {
-         this.states[this.states.length - 1].dispose();
-         this.states.pop();
+   changeScreen(screen) {
+      while(this.screens.length > 0) {
+         this.screens[this.screens.length - 1].dispose();
+         this.screens.pop();
       }
 
-      this.pushState(state);
+      this.pushScreen(screen);
    }
 
-   get currentState() {
-      return this.states[this.states.length - 1];
+   get currentScreen() {
+      return this.screens[this.screens.length - 1];
    }
 
    delegate(event, ...args) {
-      if (this.states.length > 0) {
-         this.states[this.states.length - 1].emit(event, args);
+      if (this.screens.length > 0) {
+         this.screens[this.screens.length - 1].emit(event, args);
       }
    }
 
    draw(time) {
-      if (this.states.length > 0) {
-         this.states[this.states.length - 1].draw(time);
+      if (this.screens.length > 0) {
+         this.screens[this.screens.length - 1].draw(time);
       }
    }
 
    step(time) {
-      if (this.states.length > 0) {
-         this.states[this.states.length - 1].step(time);
+      if (this.screens.length > 0) {
+         this.screens[this.screens.length - 1].step(time);
       }
    }
 

@@ -1,11 +1,11 @@
-import { GameState } from './state';
-import { GamePauseState } from './pause';
-import { GameOverState } from './over';
+import { Screen } from './screen';
+import { PauseScreen } from './pause';
+import { ScoreScreen } from './score';
 
 import { Bird } from '../bird';
 import { Terrain } from '../terrain';
 
-export class GamePlayState extends GameState {
+export class PlayScreen extends Screen {
    constructor(game) {
       super(game);
       
@@ -53,7 +53,7 @@ export class GamePlayState extends GameState {
       });
 
       this.on('blur', function(key) {
-         this.game.pushState(new GamePauseState(this.game, this));
+         this.game.pushScreen(new PauseScreen(this.game, this));
       });
    }
 
@@ -128,7 +128,7 @@ export class GamePlayState extends GameState {
             this.bird.die();
             this.deathSound.play();
             console.info('Player died, %i, %i', this.bird.x / this.terrain.cellSize, this.bird.y / this.terrain.cellSize);
-            this.game.pushState(new GameOverState(this.game, this));
+            this.game.pushScreen(new ScoreScreen(this.game, this));
          }
 
       }
@@ -182,7 +182,7 @@ export class GamePlayState extends GameState {
 
       context.drawSprite(this.spriteSheet, index, this.bird.x, -this.bird.y, 0, 1);
 
-      if (this.game.currentState == this) {
+      if (this.game.currentScreen == this) {
          context.setTransform(1, 0, 0, 1, 0, 0);
 
          context.textAlign = 'center';
