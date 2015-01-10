@@ -7,6 +7,7 @@ import { Vec2 } from './vec2';
 import { TitleScreen } from './screens';
 
 import window from 'window';
+import async from 'async';
 
 export class Game {
    constructor(element) {
@@ -19,7 +20,7 @@ export class Game {
             target.delegate(event, args);
          });
       });
-      
+
       window.requestRedraw(Game.prototype.tick.bind(this));
 
       this.assets = new Object();
@@ -27,63 +28,70 @@ export class Game {
    }
 
    preload() {
-      var filesLoaded = 0;
-      var filesTotal = 0;
-
-      var that = this;
-      var loadCallback = function(event) {
-         filesLoaded++;
-
-         if (filesLoaded >= filesTotal) {
-            that.pushScreen(new TitleScreen(that));
-         }
-      };
-
-      var loadTileSheet = function(uri) {
+      var loadTileSheet = function(uri, callback) {
          var tileSheet = new TileSheet();
 
-         tileSheet.addEventListener('load', loadCallback, false);
+         tileSheet.addEventListener('load', function() {
+            callback(null, tileSheet);
+         }, false);
+
          tileSheet.src = uri;
 
          return tileSheet;
       };
 
-      var loadSpriteSheet = function(uri) {
+      var loadSpriteSheet = function(uri, callback) {
          var spriteSheet = new SpriteSheet();
 
-         spriteSheet.addEventListener('load', loadCallback, false);
+         spriteSheet.addEventListener('load', function() {
+            console.log(spriteSheet);
+            callback(null, spriteSheet);
+         }, false);
+
          spriteSheet.src = uri;
 
          return spriteSheet;
       };
 
-      var loadImage = function(uri) {
+      var loadImage = function(uri, callback) {
          var image = new Image();
 
-         image.addEventListener('load', loadCallback, false);
+         image.addEventListener('load', function() {
+            console.log(this);
+            callback(null, image);
+         }, false);
          image.src = uri;
 
          return image;
       };
 
-      var loadAudio = function(uri) {
+      var loadAudio = function(uri, callback) {
          var audio = new Howl({
             urls: [uri],
-            onload: loadCallback,
+            onload: function() {
+               callback(null, this);
+            },
          });
 
          return audio;
       };
 
-      filesTotal = 6;
+      var that = this;
+      async.parallel({
+         'tilesheets/tiles': async.apply(loadTileSheet, 'tilesheets/tiles.json'),
+         'spritesheets/sprite': async.apply(loadSpriteSheet, 'spritesheets/sprite.json'),
+         'images/background': async.apply(loadImage, 'images/background.png'),
+         'sounds/flap': async.apply(loadAudio, 'sounds/flap.wav'),
+         'sounds/death': async.apply(loadAudio, 'sounds/death.wav'),
+         'sounds/score': async.apply(loadAudio, 'sounds/score.wav'),
+      }, function(error, results) {
+         that.assets = results;
+         that.pushScreen(new TitleScreen(that));
+      });
 
-      this.assets['tilesheets/tiles'] = loadTileSheet('tilesheets/tiles.json');
-      this.assets['spritesheets/sprite'] = loadSpriteSheet('spritesheets/sprite.json');
-      this.assets['images/background'] = loadImage('images/background.png');
-
-      this.assets['sounds/flap'] = loadAudio('sounds/flap.wav');
-      this.assets['sounds/death'] = loadAudio('sounds/death.wav');
-      this.assets['sounds/score'] = loadAudio('sounds/score.wav');
+      //this.assets['sounds/flap'] = loadAudio('sounds/flap.wav');
+      //this.assets['sounds/death'] = loadAudio('sounds/death.wav');
+      //this.assets['sounds/score'] = loadAudio('sounds/score.wav');
    }
 
    pushScreen(screen) {

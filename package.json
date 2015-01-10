@@ -28,6 +28,7 @@
     "grunt-contrib-watch": "~0.5.3"
   },
   "dependencies": {
+    "async": "^0.9.0",
     "howler": "^1.1.25"
   },
 
