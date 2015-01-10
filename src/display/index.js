@@ -24,6 +24,12 @@ export class Context {
       context.fillStyle = color;
       context.fillText(text, x, y);
    }
+   
+   drawImage(image, x, y, width, height, srcX, srcY, srcWidth, srcHeight) {
+      var context = this.target.getContext('2d');
+
+      context.drawImage(image, srcX, srcY, srcWidth, srcHeight, x, y, width, height);
+   }
 }
 
 var current = new Context();
