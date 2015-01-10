@@ -17,6 +17,11 @@ export class Context {
       this.target = canvas;
    }
 
+   clear() {
+      var context = this.target.getContext('2d');
+      context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+   }
+
    reset() {
       var context = this.target.getContext('2d');
       context.setTransform(1, 0, 0, 1, 0, 0);
