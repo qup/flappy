@@ -16,7 +16,7 @@ module.exports = function(grunt) {
          },
          src: {
             files: {
-               'dist/<%= pkg.name %>.js': ['src/index.js'],
+               'dist/<%= pkg.name %>.js': ['src/flappy/index.js'],
             }
          }
       },
