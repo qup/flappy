@@ -17,6 +17,11 @@ export class Context {
       this.target = canvas;
    }
 
+   reset() {
+      var context = this.target.getContext('2d');
+      context.setTransform(1, 0, 0, 1, 0, 0);
+   }
+
    drawText(font, text, x, y, color) {
       var context = this.target.getContext('2d');
 
