@@ -5,6 +5,8 @@ import { ScoreScreen } from './score';
 import { Bird } from '../bird';
 import { Terrain } from '../terrain';
 
+import display from '../display';
+
 export class PlayScreen extends Screen {
    constructor(game) {
       super(game);
@@ -19,8 +21,8 @@ export class PlayScreen extends Screen {
       this.view = {
          y: 0,
          x: 0,
-         width: this.game.canvas.width,
-         height: this.game.canvas.height,
+         width: display.target.width,
+         height: display.target.height,
       };
 
       var columns = Math.round(this.view.width / cellSize) * 4;
@@ -33,7 +35,7 @@ export class PlayScreen extends Screen {
       this.terrain.fill(0, this.terrainBorder - 1, columns, this.terrainBorder, 1);
       this.generationIndex = 0;
 
-      this.bird = new Bird(this.view.width - 300, this.game.canvas.height / 2, 16, 1.31);
+      this.bird = new Bird(this.view.width - 300, this.view.height / 2, 16, 1.31);
 
       this.setView(this.bird);
       this.input.flapping = true;
@@ -53,12 +55,12 @@ export class PlayScreen extends Screen {
       });
 
       this.on('blur', function(key) {
-         this.game.pushScreen(new PauseScreen(this.game, this));
+         this.game.pushScreen(new GamePauseScreen(this.game, this));
       });
    }
 
    setView(obj) {
-      this.view.y = -this.game.canvas.height;
+      this.view.y = -this.view.height;
       this.view.x = Math.floor(obj.x) + Math.min(-75, -(this.view.width - 300));
    }
    
@@ -106,7 +108,7 @@ export class PlayScreen extends Screen {
       }
 
 
-      if (this.bird.y > this.game.canvas.height - (this.bird.radius * 2)) {
+      if (this.bird.y > this.view.height - (this.bird.radius * 2)) {
          this.bird.velocity.y = -100;
       }
 
@@ -135,22 +137,56 @@ export class PlayScreen extends Screen {
    }
    
    draw(time) {
-      var context = this.game.canvas.getContext('2d');
-
-      context.canvas.width = context.canvas.width;
+      display.clear();
 
       // Draw the background
-      context.drawImage(this.backgroundImage, 0, 0, this.backgroundImage.width, this.backgroundImage.height, 0, 0, context.canvas.width, context.canvas.height);
+      display.drawImage(
+         this.backgroundImage,
+         0, 0, display.target.width, display.target.height,
+         0, 0, display.target.width, display.target.height
+      );
 
-      context.translate( -this.view.x, -this.view.y );
-      context.translate(0, -this.terrain.cellSize / 2);
 
       // Draw the map.
       // start and end indices based on where the camera is looking at.
       var offset = Math.floor(this.view.x / this.terrain.cellSize);
       var count = Math.round(this.view.width / this.terrain.cellSize) + 2;
 
-      context.drawTiles(this.tileSheet, this.terrain.cells, this.terrain.columns, this.terrain.rows, offset - count, 0, offset + count, this.terrain.rows, this.terrain.cellSize, this.terrain.cellSize);
+      var startX = offset - count;
+      var startY = 0;
+      var endX = offset + count;
+      var endY = this.terrain.rows;
+
+      var rows = this.terrain.rows;
+      var columns = this.terrain.columns;
+      var data = this.terrain.cells;
+      var cellSize = this.terrain.cellSize;
+      
+      var tileWidth = this.tileSheet.image.width / this.tileSheet.columns;
+      var tileHeight = this.tileSheet.image.height / this.tileSheet.rows;
+
+      for (var x = startX; x < endX; x++) {
+         for (var y = startY; y < endY; y++) {
+            var col = (x < 0) ? columns + x : x % columns;
+            var row = (y < 0) ? rows + y : y % rows;
+
+            var i = data[row * columns + col];
+
+            if (i < 0) {
+               continue;
+            }
+
+            var sx = (i % (this.tileSheet.image.width / tileWidth)) * tileWidth;
+            var sy = Math.floor(i / (this.tileSheet.image.width / tileWidth)) * tileHeight;
+
+            display.drawImage(
+               this.tileSheet.image,
+               (x * cellSize) - (cellSize / 2) + -this.view.x, -((y * cellSize) - display.target.height) - (cellSize / 2), cellSize, cellSize,
+               sx, sy, tileWidth, tileHeight);
+         }
+      }
+      
+
 
       // Animate and draw the player.
       var animationName = this.spriteAnimationName;
@@ -179,17 +215,19 @@ export class PlayScreen extends Screen {
 
       var animation = this.spriteSheet.animations[this.spriteAnimationName];
       var index = animation[this.spriteAnimationFrame];
+      var frame = this.spriteSheet.frames[index];
 
-      context.drawSprite(this.spriteSheet, index, this.bird.x, -this.bird.y, 0, 1);
+      var height = frame.bottom - frame.top;
+      var width = frame.right - frame.left;
+
+      var x = (this.bird.x + -this.view.x) - (width / 2);
+      var y = (-this.bird.y + display.target.height) - (height / 2);
+      
+      display.drawImage(this.spriteSheet.image, x, y, width, height, frame.left, frame.top, width, height);
 
       if (this.game.currentScreen == this) {
-         context.setTransform(1, 0, 0, 1, 0, 0);
-
-         context.textAlign = 'center';
-         context.font = '44px munro';
-
-         context.fillStyle = 'white';
-         context.fillText(this.score.toString(), context.canvas.width / 2, 100);
+         display.reset();
+         display.drawText('44px munro', `${this.score}`, display.target.width / 2, 100, 'white', 'center');
       }
    }
 }

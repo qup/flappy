@@ -1,28 +1,21 @@
 import { Screen } from './screen';
 
 export class PauseScreen extends Screen {
-   constructor(game, playState) {
+   constructor(game, playScreen) {
       super(game);
       
-      this.playState = playState;
+      this.playScreen = playScreen;
       this.elapsedTime = 0;
       
       this.on('focus', function() {
-         this.game.popState();
+         this.game.popScreen();
       });
    }
-   
+
    draw(time) {
-      var context = this.game.canvas.getContext('2d');
-      var elapsedTime = window.performance.now() / 1000;
+      this.playScreen.draw(time);
 
-      this.playState.draw(time);
-
-      context.setTransform(1, 0, 0, 1, 0, 0);
-      context.fillStyle = 'white';
-      context.textAlign = 'center';
-
-      context.font = '64px munro';
-      context.fillText('Pause', context.canvas.width / 2, context.canvas.height / 2 - 100);
+      display.reset();
+      display.drawText('64px munro', 'Pause', display.target.width / 2, display.target.height / 2 - 100, 'white', 'center');
    }
 }

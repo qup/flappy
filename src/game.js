@@ -4,19 +4,14 @@ import { Howl } from 'howler';
 import { Terrain } from './terrain';
 import { Bird } from './bird';
 import { Vec2 } from './vec2';
-import { GameTitleState } from './states';
+import { TitleScreen } from './screens';
+
+import window from './window';
 
 export class Game {
    constructor(element) {
-      this.states = new Array();
-      this.canvas = document.createElement('canvas');
+      this.screens = new Array();
       this.accumulator = 0;
-      this.element = element;
-
-      this.canvas.width = (this.element) ? this.element.clientWidth : window.innerWidth;
-      this.canvas.height = (this.element) ? this.element.clientHeight : window.innerHeight;
-
-      global.window.document.body.appendChild(this.canvas);
 
       var target = this;
       ['keydown'].forEach(function(event) {

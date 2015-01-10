@@ -1,4 +1,5 @@
 import { Screen } from './screen';
+import display from '../display';
 
 export class ScoreScreen extends Screen {
    constructor(game, playScreen) {
@@ -27,33 +28,17 @@ export class ScoreScreen extends Screen {
    }
    
    draw(time) {
-      var context = this.game.canvas.getContext('2d');
-
       this.playScreen.draw(time);
 
-      context.setTransform(1, 0, 0, 1, 0, 0);
-
-      this.elapsedTime += time;
-      context.globalAlpha = Math.min(0.4, this.elapsedTime / 2);
-      context.fillStyle = 'black';
-      context.rect(0, 0, context.canvas.width, context.canvas.height);
-      context.fill();
-
-      context.globalAlpha = 1.0;
-
-      context.textAlign = 'center';
-      context.fillStyle = 'white';
-      context.font = '64px munro';
-      context.fillText('Game Over!', context.canvas.width / 2, 100);
-
-      context.font = '34px munro';
-      context.fillText('Score', context.canvas.width / 2, 200);
-
-      context.fillText(this.playScreen.score.toString(), context.canvas.width / 2, 245 );
-
-      context.fillText('Best', context.canvas.width / 2, 300);
-      context.fillText(this.highScore.toString(), context.canvas.width / 2, 345);
-   }   
+      display.reset();
+      display.drawText('64px munro', 'Game Over', display.target.width / 2, 100, 'white', 'center');
+      
+      display.drawText('34px munro', 'Score', display.target.width / 2, 200, 'white', 'center');
+      display.drawText('34px munro', `${this.playScreen.score}`, display.target.width / 2, 250, 'white', 'center');
+      
+      display.drawText('34px munro', 'Best', display.target.width / 2, 300, 'white', 'center');
+      display.drawText('34px munro', `${this.highScore}`, display.target.width / 2, 350, 'white', 'center');
+   }
 }
 
-import { GameTitleScreen } from './title';
+import { TitleScreen } from './title';
