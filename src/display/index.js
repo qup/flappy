@@ -27,14 +27,15 @@ export class Context {
       context.setTransform(1, 0, 0, 1, 0, 0);
    }
 
-   drawText(font, text, x, y, color) {
+   drawText(font, text, x, y, color, align) {
       var context = this.target.getContext('2d');
 
       context.font = font;
+      context.textAlign = align;
       context.fillStyle = color;
       context.fillText(text, x, y);
    }
-   
+
    drawImage(image, x, y, width, height, srcX, srcY, srcWidth, srcHeight) {
       var context = this.target.getContext('2d');
 
