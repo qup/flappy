@@ -1,5 +1,6 @@
 import { GameState } from './state';
 import { GamePlayState } from './play';
+import display from '../display';
 
 export class GameTitleState extends GameState {
    constructor(game) {
@@ -12,22 +13,12 @@ export class GameTitleState extends GameState {
    }
 
    draw(time) {
-    var context = this.game.canvas.getContext('2d');
-
       // Draw the play state.
       this.playState.draw(time);
 
       // Draw our title overlay.
-      context.setTransform(1, 0, 0, 1, 0, 0);
-
-      context.textAlign = 'center';
-      context.font = '90px munro';
-      context.fillStyle = 'white';
-      context.fillText('flappy', context.canvas.width / 2, 100 );
-
-      context.textAlign = 'center';
-      context.font = '24px munro';
-      context.fillStyle = 'white';
-      context.fillText('tap to play', context.canvas.width / 2, 150);
+      display.reset();
+      display.drawText('100px munro', 'flappy', display.target.width / 2, 100, 'white');
+      display.drawText('24px munro', 'tap to play', display.target.width / 2, 150, 'white');
    }
 }

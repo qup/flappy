@@ -9,14 +9,7 @@ import { GameTitleState } from './states';
 export class Game {
    constructor(element) {
       this.states = new Array();
-      this.canvas = document.createElement('canvas');
       this.accumulator = 0;
-      this.element = element;
-
-      this.canvas.width = (this.element) ? this.element.clientWidth : window.innerWidth;
-      this.canvas.height = (this.element) ? this.element.clientHeight : window.innerHeight;
-
-      window.document.body.appendChild(this.canvas);
 
       var target = this;
       ['keydown', 'keyup', 'keypress'].forEach(function(event) {
