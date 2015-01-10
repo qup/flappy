@@ -1,6 +1,6 @@
 import { Screen } from './screen';
 import { PlayScreen } from './play';
-import display from '../../display';
+import display from 'display';
 
 export class TitleScreen extends Screen {
    constructor(game) {

@@ -29,5 +29,11 @@
   },
   "dependencies": {
     "howler": "^1.1.25"
+  },
+
+  "browser": {
+   "flappy": "./src/flappy/index.js",
+   "window": "./src/window/index.js",
+   "display": "./src/display/index.js"
   }
 }

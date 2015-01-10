@@ -5,7 +5,7 @@ import { ScoreScreen } from './score';
 import { Bird } from '../bird';
 import { Terrain } from '../terrain';
 
-import display from '../../display';
+import display from 'display';
 
 export class PlayScreen extends Screen {
    constructor(game) {
