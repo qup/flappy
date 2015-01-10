@@ -18,7 +18,7 @@ export class GameTitleState extends GameState {
 
       // Draw our title overlay.
       display.reset();
-      display.drawText('100px munro', 'flappy', display.target.width / 2, 100, 'white');
-      display.drawText('24px munro', 'tap to play', display.target.width / 2, 150, 'white');
+      display.drawText('100px munro', 'flappy', display.target.width / 2, 100, 'white', 'center');
+      display.drawText('24px munro', 'tap to play', display.target.width / 2, 150, 'white', 'center');
    }
 }
