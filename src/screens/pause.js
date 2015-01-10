@@ -1,6 +1,6 @@
-import { GameState } from './state';
+import { Screen } from './screen';
 
-export class GamePauseState extends GameState {
+export class PauseScreen extends Screen {
    constructor(game, playState) {
       super(game);
       

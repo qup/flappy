@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 
-export class GameState extends EventEmitter {
+export class Screen extends EventEmitter {
    constructor(game) {
       this.game = game;
    }
