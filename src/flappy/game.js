@@ -27,12 +27,12 @@ export class Game {
   preload() {
     var that = this;
     var tasks = async.parallel({
-      'tilesheets/tiles': async.apply(asset.loadAtlas, 'tilesheets/tiles.json'),
-      'spritesheets/sprite': async.apply(asset.loadAtlas, 'spritesheets/sprite.json'),
-      'images/background': async.apply(asset.loadImage, 'images/background.png'),
-      'sounds/flap': async.apply(asset.loadSound, 'sounds/flap.wav'),
-      'sounds/death': async.apply(asset.loadSound, 'sounds/death.wav'),
-      'sounds/score': async.apply(asset.loadSound, 'sounds/score.wav'),
+      'tilesheet/tiles': async.apply(asset.loadAtlas, 'tilesheet/tiles.json'),
+      'spritesheet/sprite': async.apply(asset.loadAtlas, 'spritesheet/sprite.json'),
+      'image/background': async.apply(asset.loadImage, 'image/background.png'),
+      'sound/flap': async.apply(asset.loadSound, 'sound/flap.wav'),
+      'sound/death': async.apply(asset.loadSound, 'sound/death.wav'),
+      'sound/score': async.apply(asset.loadSound, 'sound/score.wav'),
     }, function (error, results) {
       if (error) {
         console.error(error);

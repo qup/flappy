@@ -39,13 +39,13 @@ export class PlayScreen extends Screen {
     this.setView(this.bird);
     this.input.flapping = true;
 
-    this.spriteSheet = this.game.assets['spritesheets/sprite'];
-    this.tileSheet = this.game.assets['tilesheets/tiles'];
-    this.backgroundImage = this.game.assets['images/background'];
+    this.spriteSheet = this.game.assets['spritesheet/sprite'];
+    this.tileSheet = this.game.assets['tilesheet/tiles'];
+    this.backgroundImage = this.game.assets['image/background'];
 
-    this.flapSound = this.game.assets['sounds/flap'];
-    this.deathSound = this.game.assets['sounds/death'];
-    this.scoreSound = this.game.assets['sounds/score'];
+    this.flapSound = this.game.assets['sound/flap'];
+    this.deathSound = this.game.assets['sound/death'];
+    this.scoreSound = this.game.assets['sound/score'];
 
     this.accumulator = 0;
 
