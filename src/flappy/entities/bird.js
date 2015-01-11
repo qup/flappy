@@ -1,4 +1,6 @@
-export class Bird {
+import { EventEmitter } from 'events';
+
+export class Bird extends EventEmitter {
   constructor(x, y, radius, mass) {
     this.position = { x: x, y: y };
     this.velocity = { x: 0, y: 0 };
@@ -38,6 +40,8 @@ export class Bird {
 
     this.velocity.y = 460;
     this.velocity.x = 190;
+    
+    this.emit('flap');
   }
 
   die() {
@@ -48,5 +52,7 @@ export class Bird {
     this.dead = true;
     this.velocity.x = 0;
     this.velocity.y = 250;
+
+    this.emit('die');
   }
 }
