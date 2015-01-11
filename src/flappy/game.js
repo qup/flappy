@@ -10,7 +10,6 @@ import asset from './asset';
 export class Game {
    constructor(element) {
       this.screens = new Array();
-      this.accumulator = 0;
 
       var target = this;
       ['keydown'].forEach(function(event) {
