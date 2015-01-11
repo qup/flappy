@@ -18,7 +18,8 @@ export class Game {
       });
     });
 
-    window.requestRedraw(Game.prototype.tick.bind(this));
+    var tick = this.tick.bind(this);
+    window.requestRedraw(tick);
 
     this.assets = new Object();
     this.preload();
@@ -103,9 +104,9 @@ export class Game {
     this.draw(frameTime);
 
     if (window.focused) {
-      window.requestRedraw(Game.prototype.tick.bind(this));
+      window.requestRedraw(this.tick.bind(this));
     } else {
-      global.window.setTimeout(Game.prototype.tick.bind(this), 500);
+      global.window.setTimeout(this.tick.bind(this), 500);
     }
   }
 
