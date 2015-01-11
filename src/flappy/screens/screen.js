@@ -1,25 +1,19 @@
 import { EventEmitter } from 'events';
 
 export class Screen extends EventEmitter {
-   constructor(game) {
-      this.game = game;
-   }
-   
-   pause() {
-   }
-   
-   resume() {
-   }
-   
-   dispose() {
-   }
-   
-   handleEvent(event) {
-   }
-   
-   step(time) {
-   }
+  constructor(game) {
+    this.game = game;
+  }
 
-   draw(time) {
-   }
+  pause() {}
+
+  resume() {}
+
+  dispose() {}
+
+  handleEvent(event) {}
+
+  step(time) {}
+
+  draw(time) {}
 }
