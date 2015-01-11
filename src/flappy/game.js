@@ -1,6 +1,3 @@
-import { Terrain } from './terrain';
-import { Bird } from './bird';
-import { Vec2 } from './vec2';
 import { TitleScreen } from './screens';
 
 import window from 'window';
