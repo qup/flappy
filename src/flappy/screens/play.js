@@ -2,8 +2,7 @@ import { Screen } from './screen';
 import { PauseScreen } from './pause';
 import { ScoreScreen } from './score';
 
-import { Bird } from '../bird';
-import { Terrain } from '../terrain';
+import entities from '../entities';
 import display from 'display';
 
 export class PlayScreen extends Screen {
@@ -27,14 +26,14 @@ export class PlayScreen extends Screen {
     var columns = Math.round(this.view.width / cellSize) * 4;
     var rows = Math.round(this.view.height / cellSize) + 1;
 
-    this.terrain = new Terrain(columns, rows, cellSize);
+    this.terrain = new entities.Terrain(columns, rows, cellSize);
     this.terrainBorder = Math.floor((rows - 6) / 2);
     this.terrain.fill(0, 0, columns, rows, -1);
     this.terrain.fill(0, 0, columns, this.terrainBorder - 1, 2);
     this.terrain.fill(0, this.terrainBorder - 1, columns, this.terrainBorder, 1);
     this.generationIndex = 0;
 
-    this.bird = new Bird(this.view.width - 300, this.view.height / 2, 16, 1.31);
+    this.bird = new entities.Bird(this.view.width - 300, this.view.height / 2, 16, 1.31);
 
     this.setView(this.bird);
     this.input.flapping = true;

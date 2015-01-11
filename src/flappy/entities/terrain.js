@@ -7,6 +7,15 @@ export class Terrain {
     this.fill(0, 0, this.columns, this.rows, -1);
   }
 
+  get bounds() {
+    return {
+      x: 0,
+      y: 0,
+      width: this.columns * this.cellSize,
+      height: this.rows * this.cellSize,
+    };
+  }
+
   generate(i, length, border) {
     while (i < length) {
       var width = Math.floor(Math.random() * (3 - 2 + 1)) + 2;
