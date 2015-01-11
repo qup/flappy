@@ -1,9 +1,7 @@
-import { Vec2 } from './vec2';
-
 export class Bird {
   constructor(x, y, radius, mass) {
-    this.position = new Vec2(x, y);
-    this.velocity = new Vec2(0, 0);
+    this.position = { x: x, y: y };
+    this.velocity = { x: 0, y: 0 };
     this.radius = radius;
     this.mass = mass;
     this.dead = false;
