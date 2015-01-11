@@ -1,25 +1,16 @@
 export function loadImage(path, callback) {
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', path, true);
-  xhr.responseType = 'blob';
+  var img = new Image();
 
-  xhr.onerror = function (e) {
+  img.onerror = function(e) {
     callback(e);
-  }
+    console.log('img onerror');
+  };
 
-  xhr.onload = function (e) {
-    if (this.status == 200) {
-      var blob = this.response;
+  img.onload = function(e) {
+    console.log('img onload');
 
-      var img = document.createElement('img');
-      img.onload = function (e) {
-        window.URL.revokeObjectURL(img.src);
-        callback(null, img);
-      };
+    callback(null, img);
+  };
 
-      img.src = window.URL.createObjectURL(blob);
-    }
-  }
-
-  xhr.send();
+  img.src = path;
 }
