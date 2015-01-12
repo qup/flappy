@@ -1,5 +1,5 @@
-export { ScoreScreen } from './score';
-export { PauseScreen } from './pause';
-export { PlayScreen } from './play';
-export { Screen } from './screen';
-export { TitleScreen } from './title';
+export * from './score';
+export * from './pause';
+export * from './play';
+export * from './screen';
+export * from './title';
