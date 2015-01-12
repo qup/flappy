@@ -17,10 +17,6 @@ export class PlayScreen extends Screen {
     };
 
     this.world = new entities.World(this.view.width, this.view.height);
-    
-    this.input = {
-      flapping: false,
-    };
 
     this.spriteSheet = this.game.assets['spritesheet/sprite'];
     this.tileSheet = this.game.assets['tilesheet/tiles'];
@@ -31,7 +27,7 @@ export class PlayScreen extends Screen {
     this.scoreSound = this.game.assets['sound/score'];
 
     this.on('keydown', function (key) {
-      this.input.flapping = true;
+      this.world.bird.flap();
     });
 
     var game = this.game;
@@ -56,21 +52,15 @@ export class PlayScreen extends Screen {
     }.bind(this));
     
     this.setView(this.world.bird);
-    this.input.flapping = true;
+    this.world.bird.flap();
   }
 
   setView(obj) {
     this.view.y = -this.view.height;
     this.view.x = Math.floor(obj.x) + Math.min(-75, -(this.view.width - 300));
   }
-  
-  step(time) {
-    if (this.input.flapping) {
-      this.world.bird.flap();
-      this.input.flapping = false;
-      this.flapSound.play();
-    }
 
+  step(time) {
     this.world.step(time);
   }
 
