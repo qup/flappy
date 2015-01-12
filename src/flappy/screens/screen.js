@@ -11,8 +11,6 @@ export class Screen extends EventEmitter {
 
   dispose() {}
 
-  handleEvent(event) {}
-
   step(time) {}
 
   draw(time) {}
