@@ -1,5 +1,4 @@
-import { TitleScreen } from './screens';
-
+import screens from './screens';
 import window from 'window';
 import async from 'async';
 import assets from './assets';
@@ -37,7 +36,7 @@ export class Game {
       }
 
       that.assets = results;
-      that.pushScreen(new TitleScreen(that));
+      that.pushScreen(new screens.TitleScreen(that));
     });
   }
 
