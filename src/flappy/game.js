@@ -2,7 +2,7 @@ import { TitleScreen } from './screens';
 
 import window from 'window';
 import async from 'async';
-import asset from './asset';
+import assets from './assets';
 
 export class Game {
   constructor(element) {
