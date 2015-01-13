@@ -61,7 +61,8 @@ module.exports = function(grunt) {
       connect: {
          dist: {
             options: {
-               base: 'dist/'
+               base: 'dist/',
+               hostname: '*'
             },
          },
       },
