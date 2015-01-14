@@ -9,25 +9,25 @@ export class Window extends EventEmitter {
     super();
 
     var target = this;
-      ['keydown', 'keyup', 'keypress'].forEach(function (event) {
+    ['keydown', 'keyup', 'keypress'].forEach(function (event) {
       global.window.addEventListener(event, function (data) {
         target.emit(event);
       });
     });
 
-      ['mousedown', 'mouseup', 'mousepress'].forEach(function (event) {
+    ['mousedown', 'mouseup', 'mousepress'].forEach(function (event) {
       global.window.addEventListener(event, function (data) {
         target.emit(event);
       });
     });
 
-      ['touchstart', 'touchend', 'touchmove'].forEach(function (event) {
+    ['touchstart', 'touchend', 'touchmove'].forEach(function (event) {
       global.window.addEventListener(event, function (data) {
         target.emit(event);
       });
     });
 
-      ['blur', 'focus', 'focusin', 'focusout'].forEach(function (event) {
+    ['blur', 'focus', 'focusin', 'focusout'].forEach(function (event) {
       global.window.addEventListener(event, function (data) {
         target.emit(event);
       });
