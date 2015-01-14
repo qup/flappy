@@ -8,7 +8,18 @@ export class Game {
     this.screens = new Array();
 
     var target = this;
-      ['keydown'].forEach(function (event) {
+    [
+      'keydown',
+      'keyup',
+      'keypress',
+      'mousedown',
+      'mouseup',
+      'mousepress',
+      'touchstart',
+      'touchend',
+      'touchmove',
+      'blur', 'focus',
+    ].forEach(function (event) {
       window.on('keydown', function (...args) {
         target.delegate(event, args);
       });
