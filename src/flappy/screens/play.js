@@ -73,13 +73,8 @@ export class PlayScreen extends Screen {
     );
   }
 
-  draw(time) {
-    this.setView(this.world.bird);
-    this.drawBackground();
-
-    // Draw the map.
-    // start and end indices based on where the camera is looking at.
-    var offset = Math.floor(this.view.x / this.world.terrain.cellSize);
+  drawTerrain() {
+  var offset = Math.floor(this.view.x / this.world.terrain.cellSize);
     var count = Math.round(this.view.width / this.world.terrain.cellSize) + 2;
 
     var startX = offset - count;
@@ -114,6 +109,16 @@ export class PlayScreen extends Screen {
           sx, sy, tileWidth, tileHeight);
       }
     }
+  }
+
+  draw(time) {
+    this.setView(this.world.bird);
+    this.drawBackground();
+    this.drawTerrain();
+
+    // Draw the map.
+    // start and end indices based on where the camera is looking at.
+
 
     // Animate and draw the player.
     var animationName = this.spriteAnimationName;
