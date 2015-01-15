@@ -12,8 +12,8 @@ export class PlayScreen extends Screen {
     this.view = {
       y: 0,
       x: 0,
-      width: display.target.width,
-      height: display.target.height,
+      width: 320,
+      height: 480,
     };
 
     this.world = new entities.World(this.view.width, this.view.height);
