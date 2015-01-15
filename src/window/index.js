@@ -11,12 +11,32 @@ export class Window extends EventEmitter {
     var target = this;
     ['keydown', 'keyup', 'keypress'].forEach(function (event) {
       global.window.addEventListener(event, function (data) {
-        target.emit(event);
+        var key = data.key || data.which;
+        var scancode = data.location;
+
+        var modifiers = {
+          alt: data.altKey,
+          ctrl: data.ctrlKey,
+          shift: data.shiftKey,
+          meta: data.metaKey,
+        };
+
+        target.emit(event, key, scancode, modifiers);
       });
     });
 
     ['mousedown', 'mouseup', 'mousepress'].forEach(function (event) {
       global.window.addEventListener(event, function (data) {
+        var button = data.button;
+        var x = data.clientX;
+        var y = data.clientY;
+        var modifiers = {
+          alt: data.altKey,
+          ctrl: data.ctrlKey,
+          shift: data.shiftKey,
+          meta: data.metaKey,
+        };
+
         target.emit(event);
       });
     });
