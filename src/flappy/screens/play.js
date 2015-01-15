@@ -64,17 +64,18 @@ export class PlayScreen extends Screen {
     this.world.step(time);
   }
 
-  draw(time) {
-    this.setView(this.world.bird);
-      
+  drawBackground() {
     display.clear();
-
-    // Draw the background
     display.drawImage(
       this.backgroundImage,
       0, 0, display.target.width, display.target.height,
       0, 0, display.target.width, display.target.height
     );
+  }
+
+  draw(time) {
+    this.setView(this.world.bird);
+    this.drawBackground();
 
     // Draw the map.
     // start and end indices based on where the camera is looking at.
