@@ -111,16 +111,7 @@ export class PlayScreen extends Screen {
     }
   }
 
-  draw(time) {
-    this.setView(this.world.bird);
-    this.drawBackground();
-    this.drawTerrain();
-
-    // Draw the map.
-    // start and end indices based on where the camera is looking at.
-
-
-    // Animate and draw the player.
+  drawPlayer(time) {
     var animationName = this.spriteAnimationName;
     if (this.world.bird.dead) {
       this.spriteAnimationName = 'dead';
@@ -156,7 +147,16 @@ export class PlayScreen extends Screen {
     var y = (-this.world.bird.y + display.target.height) - (height / 2);
 
     display.drawImage(this.spriteSheet.image, x, y, width, height, frame.left, frame.top, width, height);
+  }
 
+  draw(time) {
+    this.setView(this.world.bird);
+    this.drawBackground();
+    this.drawTerrain();
+    this.drawPlayer(time);
+
+    // Draw the map.
+    // start and end indices based on where the camera is looking at.
     if (this.game.currentScreen == this) {
       display.reset();
       display.drawText('44px munro', `${this.world.score}`, display.target.width / 2, 100, 'white', 'center');
