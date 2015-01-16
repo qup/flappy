@@ -36,8 +36,14 @@ export class Context {
     context.fillText(text, x, y);
   }
 
-  drawImage(image, x, y, width, height, srcX, srcY, srcWidth, srcHeight) {
+  drawImage(image, x, y, width, height, srcX, srcY, srcWidth, srcHeight, scaleX = 1, scaleY = 1, originX = 0, originY = 0) {
     var context = this.target.getContext('2d');
+
+    x = (x * scaleX) + (-originX * scaleX);
+    y = (y * scaleY) + (-originY * scaleY);
+
+    width = width * scaleX;
+    height = height * scaleY;
 
     context.drawImage(image, srcX, srcY, srcWidth, srcHeight, x, y, width, height);
   }
