@@ -53,11 +53,10 @@ export class PlayScreen extends Screen {
 
   drawBackground(scale, offsetX, offsetY) {
     display.clear();
-
     display.drawImage(
       this.backgroundImage,
-      0, 0, display.target.width, display.target.height,
-      0, 0, display.target.width, display.target.height,
+      0, 0, this.world.width, this.world.height,
+      0, 0, this.backgroundImage.width, this.backgroundImage.height,
       scale, scale, 0, 0
     );
   }
