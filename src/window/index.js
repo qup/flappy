@@ -37,7 +37,7 @@ export class Window extends EventEmitter {
           meta: data.metaKey,
         };
 
-        target.emit(event);
+        target.emit(event, x, y, button, modifiers);
       });
     });
 
