@@ -56,30 +56,31 @@ export class PlayScreen extends Screen {
   }
 
   setView(obj) {
-    this.view.y = -this.view.height;
-    this.view.x = Math.floor(obj.x) + Math.min(-75, -(this.view.width - 300));
+    this.view.y = Math.floor(this.world.height);
+    this.view.x = Math.floor(-obj.x + 600);
   }
 
   step(time) {
     this.world.step(time);
   }
 
-  drawBackground() {
+  drawBackground(scale) {
     display.clear();
     display.drawImage(
       this.backgroundImage,
       0, 0, display.target.width, display.target.height,
-      0, 0, display.target.width, display.target.height
+      0, 0, display.target.width, display.target.height,
+      scale, scale, 0, 0
     );
   }
 
-  drawTerrain() {
-  var offset = Math.floor(this.view.x / this.world.terrain.cellSize);
+  drawTerrain(scale) {
+    var offset = Math.floor(this.view.x / this.world.terrain.cellSize);
     var count = Math.round(this.view.width / this.world.terrain.cellSize) + 2;
 
-    var startX = offset - count;
+    var startX = 0;
     var startY = 0;
-    var endX = offset + count;
+    var endX = this.world.terrain.columns;
     var endY = this.world.terrain.rows;
 
     var rows = this.world.terrain.rows;
@@ -105,13 +106,16 @@ export class PlayScreen extends Screen {
         var sy = Math.floor(i / (this.tileSheet.image.width / tileWidth)) * tileHeight;
 
         display.drawImage(
-          this.tileSheet.image, (x * cellSize) - (cellSize / 2) + -this.view.x, -((y * cellSize) - display.target.height) - (cellSize / 2), cellSize, cellSize,
-          sx, sy, tileWidth, tileHeight);
+          this.tileSheet.image,
+          (x * cellSize) + this.view.x, (-y * cellSize) + this.view.y, cellSize, cellSize,
+          sx, sy, tileWidth, tileHeight,
+          scale, scale, cellSize / 2, cellSize / 2
+        );
       }
     }
   }
 
-  drawPlayer(time) {
+  drawPlayer(time, scale) {
     var animationName = this.spriteAnimationName;
     if (this.world.bird.dead) {
       this.spriteAnimationName = 'dead';
@@ -143,17 +147,27 @@ export class PlayScreen extends Screen {
     var height = frame.bottom - frame.top;
     var width = frame.right - frame.left;
 
-    var x = (this.world.bird.x + -this.view.x) - (width / 2);
-    var y = (-this.world.bird.y + display.target.height) - (height / 2);
+    var x = this.world.bird.x + this.view.x;
+    var y = -this.world.bird.y + this.view.y;
 
-    display.drawImage(this.spriteSheet.image, x, y, width, height, frame.left, frame.top, width, height);
+    display.drawImage(
+      this.spriteSheet.image,
+      x, y, width, height,
+      frame.left, frame.top, width, height,
+      scale, scale, width / 2, height / 2
+    );
   }
 
   draw(time) {
     this.setView(this.world.bird);
-    this.drawBackground();
-    this.drawTerrain();
-    this.drawPlayer(time);
+
+    var scaleX = display.target.width / this.world.width;
+    var scaleY = display.target.height / this.world.height;
+    var scale = Math.min(scaleX, scaleY);
+
+    this.drawBackground(scale);
+    this.drawTerrain(scale);
+    this.drawPlayer(time, scale);
 
     // Draw the map.
     // start and end indices based on where the camera is looking at.
