@@ -9,14 +9,7 @@ export class PlayScreen extends Screen {
   constructor(game) {
     super(game);
 
-    this.view = {
-      y: 0,
-      x: 0,
-      width: 320,
-      height: 480,
-    };
-
-    this.world = new entities.World(this.view.width, this.view.height);
+    this.world = new entities.World(320, 480);
 
     this.spriteSheet = this.game.assets['spritesheet/sprite'];
     this.tileSheet = this.game.assets['tilesheet/tiles'];
@@ -50,22 +43,17 @@ export class PlayScreen extends Screen {
     this.world.on('defeat', function() {
       this.game.pushScreen(new ScoreScreen(this.game, this));
     }.bind(this));
-    
-    this.setView(this.world.bird);
-    this.world.bird.flap();
-  }
 
-  setView(obj) {
-    this.view.y = Math.floor(this.world.height);
-    this.view.x = Math.floor(-obj.x + 600);
+    this.world.bird.flap();
   }
 
   step(time) {
     this.world.step(time);
   }
 
-  drawBackground(scale) {
+  drawBackground(scale, offsetX, offsetY) {
     display.clear();
+
     display.drawImage(
       this.backgroundImage,
       0, 0, display.target.width, display.target.height,
@@ -74,10 +62,7 @@ export class PlayScreen extends Screen {
     );
   }
 
-  drawTerrain(scale) {
-    var offset = Math.floor(this.view.x / this.world.terrain.cellSize);
-    var count = Math.round(this.view.width / this.world.terrain.cellSize) + 2;
-
+  drawTerrain(scale, offsetX, offsetY) {
     var startX = 0;
     var startY = 0;
     var endX = this.world.terrain.columns;
@@ -107,7 +92,7 @@ export class PlayScreen extends Screen {
 
         display.drawImage(
           this.tileSheet.image,
-          (x * cellSize) + this.view.x, (-y * cellSize) + this.view.y, cellSize, cellSize,
+          (x * cellSize) + offsetX, (-y * cellSize) + offsetY, cellSize, cellSize,
           sx, sy, tileWidth, tileHeight,
           scale, scale, cellSize / 2, cellSize / 2
         );
@@ -115,7 +100,7 @@ export class PlayScreen extends Screen {
     }
   }
 
-  drawPlayer(time, scale) {
+  drawPlayer(time, scale, offsetX, offsetY) {
     var animationName = this.spriteAnimationName;
     if (this.world.bird.dead) {
       this.spriteAnimationName = 'dead';
@@ -147,8 +132,8 @@ export class PlayScreen extends Screen {
     var height = frame.bottom - frame.top;
     var width = frame.right - frame.left;
 
-    var x = this.world.bird.x + this.view.x;
-    var y = -this.world.bird.y + this.view.y;
+    var x = this.world.bird.x + offsetX;
+    var y = -this.world.bird.y + offsetY;
 
     display.drawImage(
       this.spriteSheet.image,
@@ -158,22 +143,21 @@ export class PlayScreen extends Screen {
     );
   }
 
+  drawOverlay(scale) {
+    display.drawText(`44px munro`, `${this.world.score}`, display.target.width / 2, 100, 'white', 'center');
+  }
+
   draw(time) {
-    this.setView(this.world.bird);
+    var offsetX = -this.world.bird.x + (this.world.width / 4);
+    var offsetY = this.world.height;
 
     var scaleX = display.target.width / this.world.width;
     var scaleY = display.target.height / this.world.height;
     var scale = Math.min(scaleX, scaleY);
 
-    this.drawBackground(scale);
-    this.drawTerrain(scale);
-    this.drawPlayer(time, scale);
-
-    // Draw the map.
-    // start and end indices based on where the camera is looking at.
-    if (this.game.currentScreen == this) {
-      display.reset();
-      display.drawText('44px munro', `${this.world.score}`, display.target.width / 2, 100, 'white', 'center');
-    }
+    this.drawBackground(scale, offsetX, offsetY);
+    this.drawTerrain(scale, offsetX, offsetY);
+    this.drawPlayer(time, scale, offsetX, offsetY);
+    this.drawOverlay(scale);
   }
 }
