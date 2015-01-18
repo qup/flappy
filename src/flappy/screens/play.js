@@ -27,7 +27,7 @@ export class PlayScreen extends Screen {
     this.on('blur', function (key) {
       game.pushScreen(new PauseScreen(this.game, game));
     });
-    
+
     this.world.bird.on('flap', function() {
       this.flapSound.play();
     }.bind(this))
@@ -35,7 +35,7 @@ export class PlayScreen extends Screen {
     this.world.bird.on('die', function() {
       this.deathSound.play();
     }.bind(this))
-    
+
     this.world.on('score', function() {
       this.scoreSound.play();
     }.bind(this));
