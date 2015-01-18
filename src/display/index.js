@@ -39,6 +39,8 @@ export class Context {
   drawImage(image, x, y, width, height, srcX, srcY, srcWidth, srcHeight, scaleX = 1, scaleY = 1, originX = 0, originY = 0) {
     var context = this.target.getContext('2d');
 
+    context.imageSmoothingEnabled = false;
+
     x = (x * scaleX) + (-originX * scaleX);
     y = (y * scaleY) + (-originY * scaleY);
 
