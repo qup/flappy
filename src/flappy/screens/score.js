@@ -1,7 +1,7 @@
 import { Screen } from './screen';
 import display from 'display';
 
-export class ScoreScreen extends Screen {
+export class Score extends Screen {
   constructor(game, playScreen) {
     super(game, playScreen);
 
@@ -19,7 +19,7 @@ export class ScoreScreen extends Screen {
     this.elapsedTime = 0;
 
     this.on('keydown', function (key) {
-      this.game.changeScreen(new TitleScreen(this.game));
+      this.game.changeScreen(new Title(this.game));
     });
   }
 
@@ -41,4 +41,4 @@ export class ScoreScreen extends Screen {
   }
 }
 
-import { TitleScreen } from './title';
+import { Title } from './title';

@@ -1,11 +1,11 @@
 import { Screen } from './screen';
-import { PauseScreen } from './pause';
-import { ScoreScreen } from './score';
+import { Pause } from './pause';
+import { Score } from './score';
 
 import entities from '../entities';
 import display from 'display';
 
-export class PlayScreen extends Screen {
+export class Play extends Screen {
   constructor(game) {
     super(game);
 
@@ -25,7 +25,7 @@ export class PlayScreen extends Screen {
 
     var game = this.game;
     this.on('blur', function (key) {
-      game.pushScreen(new PauseScreen(this.game, game));
+      game.pushScreen(new Pause(this.game, game));
     });
 
     this.world.bird.on('flap', function() {
@@ -41,7 +41,7 @@ export class PlayScreen extends Screen {
     }.bind(this));
 
     this.world.on('defeat', function() {
-      this.game.pushScreen(new ScoreScreen(this.game, this));
+      this.game.pushScreen(new Score(this.game, this));
     }.bind(this));
 
     this.world.bird.flap();

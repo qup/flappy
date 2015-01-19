@@ -47,7 +47,7 @@ export class Game {
       }
 
       that.assets = results;
-      that.pushScreen(new screens.TitleScreen(that));
+      that.pushScreen(new screens.Title(that));
     });
   }
 

@@ -1,11 +1,11 @@
 import { Screen } from './screen';
-import { PlayScreen } from './play';
+import { Play } from './play';
 import display from 'display';
 
-export class TitleScreen extends Screen {
+export class Title extends Screen {
   constructor(game) {
     super(game);
-    this.playScreen = new PlayScreen(game);
+    this.playScreen = new Play(game);
 
     this.on('keydown', function (key) {
       this.game.changeScreen(this.playScreen);

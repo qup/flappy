@@ -1,6 +1,6 @@
 import { Screen } from './screen';
 
-export class PauseScreen extends Screen {
+export class Pause extends Screen {
   constructor(game, playScreen) {
     super(game);
 
