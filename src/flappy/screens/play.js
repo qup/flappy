@@ -66,37 +66,35 @@ export class Play extends Screen {
   }
 
   drawTerrain(scale, offsetX, offsetY) {
-    var rows = this.world.terrain.rows;
-    var columns = this.world.terrain.columns;
-    var data = this.world.terrain.cells;
-    var size = this.world.terrain.cellSize;
+    var atlas = this.tileSheet;
+    var { rows, columns, data, size } = this.world.terrain;
 
     var startX = Math.floor(-offsetX / size);
     var startY = Math.floor(-offsetY / size);
     var endX = startX + Math.ceil(display.target.width / size);
     var endY = startY + Math.ceil(display.target.height / size);
 
-    var tileWidth = this.tileSheet.image.width / this.tileSheet.columns;
-    var tileHeight = this.tileSheet.image.height / this.tileSheet.rows;
+    var srcWidth = atlas.image.width / atlas.columns;
+    var srcHeight = atlas.image.height / atlas.rows;
 
     for (var x = startX; x < endX; x++) {
       for (var y = startY; y < endY; y++) {
         var col = (x < 0) ? columns + x : x % columns;
         var row = (y < 0) ? rows + y : y % rows;
 
-        var i = data[row * columns + col];
+        var index = data[row * columns + col];
 
-        if (i < 0) {
+        if (index < 0) {
           continue;
         }
 
-        var sx = (i % (this.tileSheet.image.width / tileWidth)) * tileWidth;
-        var sy = Math.floor(i / (this.tileSheet.image.width / tileWidth)) * tileHeight;
+        var srcX = (index % (atlas.image.width / srcWidth)) * srcWidth;
+        var srcY = Math.floor(index / (atlas.image.width / srcWidth)) * srcHeight;
 
         display.drawImage(
-          this.tileSheet.image,
+          atlas.image,
           (x * size) + offsetX, (-y * size) + offsetY, size, size,
-          sx, sy, tileWidth, tileHeight,
+          srcX, srcY, srcWidth, srcHeight,
           scale, scale, size / 2, size / 2
         );
       }
