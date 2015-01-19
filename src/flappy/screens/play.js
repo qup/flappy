@@ -66,15 +66,15 @@ export class PlayScreen extends Screen {
   }
 
   drawTerrain(scale, offsetX, offsetY) {
-    var startX = 0;
-    var startY = 0;
-    var endX = this.world.terrain.columns;
-    var endY = this.world.terrain.rows;
-
     var rows = this.world.terrain.rows;
     var columns = this.world.terrain.columns;
     var data = this.world.terrain.cells;
-    var cellSize = this.world.terrain.cellSize;
+    var size = this.world.terrain.cellSize;
+
+    var startX = Math.floor(-offsetX / size);
+    var startY = Math.floor(-offsetY / size);
+    var endX = startX + Math.ceil(display.target.width / size);
+    var endY = startY + Math.ceil(display.target.height / size);
 
     var tileWidth = this.tileSheet.image.width / this.tileSheet.columns;
     var tileHeight = this.tileSheet.image.height / this.tileSheet.rows;
@@ -95,9 +95,9 @@ export class PlayScreen extends Screen {
 
         display.drawImage(
           this.tileSheet.image,
-          (x * cellSize) + offsetX, (-y * cellSize) + offsetY, cellSize, cellSize,
+          (x * size) + offsetX, (-y * size) + offsetY, size, size,
           sx, sy, tileWidth, tileHeight,
-          scale, scale, cellSize / 2, cellSize / 2
+          scale, scale, size / 2, size / 2
         );
       }
     }
