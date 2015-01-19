@@ -1,9 +1,9 @@
 export class Terrain {
-  constructor(columns, rows, cellSize) {
+  constructor(columns, rows, size) {
     this.rows = rows;
     this.columns = columns;
-    this.cellSize = cellSize;
-    this.cells = new Array(rows * columns);
+    this.size = size;
+    this.data = new Array(rows * columns);
     this.fill(0, 0, this.columns, this.rows, -1);
   }
 
@@ -11,8 +11,8 @@ export class Terrain {
     return {
       x: 0,
       y: 0,
-      width: this.columns * this.cellSize,
-      height: this.rows * this.cellSize,
+      width: this.columns * this.size,
+      height: this.rows * this.size,
     };
   }
 
@@ -24,7 +24,7 @@ export class Terrain {
         width--;
       }
 
-      var distance = Math.ceil(128 / this.cellSize);
+      var distance = Math.ceil(128 / this.size);
       this.generateObstacle(i, i + width, distance, border);
 
       var seperation = 3;
@@ -35,7 +35,7 @@ export class Terrain {
   fill(x, y, width, height, value) {
     for (var col = x; col < width; col++) {
       for (var row = y; row < height; row++) {
-        this.cells[row * this.columns + col] = value;
+        this.data[row * this.columns + col] = value;
       }
     }
   }
@@ -104,20 +104,20 @@ export class Terrain {
           }
         }
 
-        this.cells[row * this.columns + col] = value;
+        this.data[row * this.columns + col] = value;
       }
     }
   }
 
   queryAt(x, y) {
-    var col = Math.floor(x / this.cellSize);
-    var row = Math.floor(y / this.cellSize);
+    var col = Math.floor(x / this.size);
+    var row = Math.floor(y / this.size);
 
     return this.valueAt(col, row);
   }
 
   valueAt(x, y) {
-    return this.cells[this.indexAt(x, y)];
+    return this.data[this.indexAt(x, y)];
   }
 
   // Returns the index of the given cell coordinates
@@ -127,25 +127,25 @@ export class Terrain {
 
   intersects(obj) {
     // determine which cell the object is in.
-    var col = Math.floor(obj.x / this.cellSize);
-    var row = Math.floor(obj.y / this.cellSize);
+    var col = Math.floor(obj.x / this.size);
+    var row = Math.floor(obj.y / this.size);
 
-    // number of cells to check.
-    var count = 2; // Math.ceil(obj.radius / this.cellSize);
+    // number of data to check.
+    var count = 2; // Math.ceil(obj.radius / this.size);
 
     for (var i = (col - count); i < (col + count); i++) {
       for (var j = (row - count); j < (row + count); j++) {
         if (Math.floor(this.valueAt(i, j)) > 0) {
 
           // center of the cell in world space.
-          var x = i * this.cellSize;
-          var y = j * this.cellSize;
+          var x = i * this.size;
+          var y = j * this.size;
 
           var distance = Math.sqrt((x -= obj.x) * x + (y -= obj.y) * y);
 
-          if (distance < (this.cellSize / 2) + obj.radius) {
+          if (distance < (this.size / 2) + obj.radius) {
 
-            //this.cells[this.indexAt(i, j)] = -1;
+            //this.data[this.indexAt(i, j)] = -1;
             return true;
           }
         }

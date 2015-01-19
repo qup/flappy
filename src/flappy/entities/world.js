@@ -10,11 +10,11 @@ export class World extends EventEmitter {
     this.accumulator = 0;
 
     this.score = 0;
-    var cellSize = 64;
-    var columns = Math.round(width / cellSize) * 4;
-    var rows = Math.round(height / cellSize) + 1;
+    var size = 64;
+    var columns = Math.round(width / size) * 4;
+    var rows = Math.round(height / size) + 1;
 
-    this.terrain = new Terrain(columns, rows, cellSize);
+    this.terrain = new Terrain(columns, rows, size);
     this.terrainBorder = Math.floor((rows - 6) / 2);
     this.terrain.fill(0, 0, columns, rows, -1);
     this.terrain.fill(0, 0, columns, this.terrainBorder - 1, 2);
@@ -35,10 +35,10 @@ export class World extends EventEmitter {
   }
 
   integrate(time) {
-    var width = Math.round(this.width / this.terrain.cellSize);
+    var width = Math.round(this.width / this.terrain.size);
     var views = Math.floor(this.terrain.columns / width);
 
-    var column = Math.round((this.bird.x + this.width) / this.terrain.cellSize);
+    var column = Math.round((this.bird.x + this.width) / this.terrain.size);
     var index = (Math.floor(column / width)) % views;
 
     if (index != this.generationIndex) {
@@ -52,7 +52,7 @@ export class World extends EventEmitter {
       this.generationIndex = index;
     }
 
-    if (this.bird.position.x > (this.terrain.columns * this.terrain.cellSize)) {
+    if (this.bird.position.x > (this.terrain.columns * this.terrain.size)) {
       this.bird.position.x -= this.bird.position.x;
       console.info('Transporting player');
     }
