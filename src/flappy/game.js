@@ -59,11 +59,11 @@ export class Game {
 
   popScreen() {
     if (this.screens.length > 0) {
-      this.screens[this.screens.length - 1].dispose();
+      this.screens[this.screens.length - 1].deactivate();
       var screen = this.screens.pop();
 
       if (this.screens.length > 0) {
-        this.screens[this.screens.length - 1].resume();
+        this.screens[this.screens.length - 1].activate();
       }
 
       return screen;
@@ -72,7 +72,7 @@ export class Game {
 
   changeScreen(screen) {
     while (this.screens.length > 0) {
-      this.screens[this.screens.length - 1].dispose();
+      this.screens[this.screens.length - 1].deactivate();
       this.screens.pop();
     }
 
