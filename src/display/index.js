@@ -40,6 +40,9 @@ export class Context {
     var context = this.target.getContext('2d');
 
     context.imageSmoothingEnabled = false;
+    context.webkitImageSmoothingEnabled = false;
+    context.mozImageSmoothingEnabled = false;
+    context.msImageSmoothingEnabled = false;
 
     x = (x * scaleX) + (-originX * scaleX);
     y = (y * scaleY) + (-originY * scaleY);
