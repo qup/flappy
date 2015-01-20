@@ -14,27 +14,6 @@
             overflow: hidden;
          }
       </style>
-
-      <!-- Platform detection -->
-      <script type='application/javascript'>
-         (function() {
-            if (window.location.hostname.match(/kong/)) {
-               console.info('Loading kongregate API');
-               var script = document.createElement('script');
-               document.documentElement.appendChild(script);
-
-               script.addEventListener('load', function() {
-                  kongregateAPI.loadAPI(function() {
-                     console.info('Kongregate loaded');
-                     window.kongregate = kongregateAPI.getAPI();
-                  });
-               });
-
-               script.setAttribute('src', 'http://www.kongregate.com/javascripts/kongregate_api.js');
-            }
-         })();
-      </script>
-
       <script src='flappy.js' type='application/javascript'></script>
    </head>
 
