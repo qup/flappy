@@ -7,8 +7,7 @@ export class Game {
   constructor(element) {
     this.screens = new Array();
 
-    var target = this;
-    [
+    const events = [
       'keydown',
       'keyup',
       'keypress',
@@ -18,10 +17,13 @@ export class Game {
       'touchstart',
       'touchend',
       'touchmove',
-      'blur', 'focus',
-    ].forEach(function (event) {
-      window.on('keydown', function (...args) {
-        target.delegate(event, args);
+      'blur',
+      'focus',
+    ];
+
+    events.forEach((event) => {
+      window.on(event, (...args) => {
+        this.delegate(event, args);
       });
     });
 
