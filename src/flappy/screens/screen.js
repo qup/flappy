@@ -5,11 +5,9 @@ export class Screen extends EventEmitter {
     this.game = game;
   }
 
-  pause() {}
+  activate() {}
 
-  resume() {}
-
-  dispose() {}
+  deactivate() {}
 
   step(time) {}
 
