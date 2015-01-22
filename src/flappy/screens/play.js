@@ -25,7 +25,7 @@ export class Play extends Screen {
 
     var game = this.game;
     this.on('blur', function (key) {
-      game.pushScreen(new Pause(this.game, game));
+      game.push(new Pause(this.game, game));
     });
 
     this.world.bird.on('flap', function() {
@@ -41,7 +41,7 @@ export class Play extends Screen {
     }.bind(this));
 
     this.world.on('defeat', function() {
-      this.game.pushScreen(new Score(this.game, this));
+      this.game.push(new Score(this.game, this));
     }.bind(this));
 
     this.world.bird.flap();

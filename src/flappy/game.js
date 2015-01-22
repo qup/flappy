@@ -5,7 +5,7 @@ import assets from './assets';
 
 export class Game {
   constructor(element) {
-    this.screens = new Array();
+    this._screens = new Array();
 
     const events = [
       'keydown',
@@ -49,56 +49,74 @@ export class Game {
       }
 
       that.assets = results;
-      that.pushScreen(new screens.Title(that));
+      that.push(new screens.Title(that));
     });
   }
 
-  pushScreen(screen) {
-    this.screens.push(screen);
-  }
+  push(screen) {
+    var stack = this._screens;
 
-  popScreen() {
-    if (this.screens.length > 0) {
-      this.screens[this.screens.length - 1].deactivate();
-      var screen = this.screens.pop();
-
-      if (this.screens.length > 0) {
-        this.screens[this.screens.length - 1].activate();
-      }
-
-      return screen;
-    }
-  }
-
-  changeScreen(screen) {
-    while (this.screens.length > 0) {
-      this.screens[this.screens.length - 1].deactivate();
-      this.screens.pop();
+    var current = stack[stack.length - 1];
+    if (current) {
+      current.deactivate();
     }
 
-    this.pushScreen(screen);
+    screen.activate();
+    stack.push(screen);
   }
 
-  get currentScreen() {
-    return this.screens[this.screens.length - 1];
+  pop() {
+    var stack = this._screens;
+
+    var current = stack.pop();
+    if (current) {
+      current.deactivate();
+    }
+
+    var previous = stack[stack.length - 1];
+    if (previous) {
+      previous.activate();
+    }
+
+    return current;
+  }
+
+  peek() {
+    var stack = this._screens;
+  }
+
+  switch(screen) {
+    var stack = this._screens;
+
+    while (stack.length) {
+      var current = stack[stack.length - 1];
+      current.deactivate();
+      stack.pop();
+    }
+
+    screen.activate();
+    stack.push(screen);
   }
 
   delegate(event, ...args) {
-    if (this.screens.length > 0) {
-      this.screens[this.screens.length - 1].emit(event, args);
+    var stack = this._screens;
+    var current = stack[stack.length - 1];
+
+    if (current) {
+      if (current[event]) {
+        current[event](...args);
+      }
+
+      current.emit(event, ...args);
     }
   }
 
   draw(time) {
-    if (this.screens.length > 0) {
-      this.screens[this.screens.length - 1].draw(time);
-    }
+    this.delegate('draw', time);
   }
 
   step(time) {
-    if (this.screens.length > 0) {
-      this.screens[this.screens.length - 1].step(time);
-    }
+    this.delegate('step', time);
   }
 
   tick(time) {

@@ -8,7 +8,7 @@ export class Title extends Screen {
     this.playScreen = new Play(game);
 
     this.on('keydown', function (key) {
-      this.game.changeScreen(this.playScreen);
+      this.game.switch(this.playScreen);
     });
   }
 
