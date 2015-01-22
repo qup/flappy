@@ -8,9 +8,8 @@ export class Window extends EventEmitter {
 
     super();
 
-    var target = this;
-    ['keydown', 'keyup', 'keypress'].forEach(function (event) {
-      global.window.addEventListener(event, function (data) {
+    ['keydown', 'keyup', 'keypress'].forEach(event => {
+      global.window.addEventListener(event, data => {
         var key = data.key || data.which;
         var scancode = data.location;
 
@@ -21,12 +20,12 @@ export class Window extends EventEmitter {
           meta: data.metaKey,
         };
 
-        target.emit(event, key, scancode, modifiers);
+        this.emit(event, key, scancode, modifiers);
       });
     });
 
-    ['mousedown', 'mouseup', 'mousepress'].forEach(function (event) {
-      global.window.addEventListener(event, function (data) {
+    ['mousedown', 'mouseup', 'mousepress'].forEach(event => {
+      global.window.addEventListener(event, data => {
         var button = data.button;
         var x = data.clientX;
         var y = data.clientY;
@@ -37,19 +36,19 @@ export class Window extends EventEmitter {
           meta: data.metaKey,
         };
 
-        target.emit(event, x, y, button, modifiers);
+        this.emit(event, x, y, button, modifiers);
       });
     });
 
-    ['touchstart', 'touchend', 'touchmove'].forEach(function (event) {
-      global.window.addEventListener(event, function (data) {
-        target.emit(event);
+    ['touchstart', 'touchend', 'touchmove'].forEach(event => {
+      global.window.addEventListener(event, data => {
+        this.emit(event);
       });
     });
 
-    ['blur', 'focus', 'focusin', 'focusout'].forEach(function (event) {
-      global.window.addEventListener(event, function (data) {
-        target.emit(event);
+    ['blur', 'focus', 'focusin', 'focusout'].forEach(event => {
+      global.window.addEventListener(event, data => {
+        this.emit(event);
       });
     });
   }
