@@ -10,6 +10,11 @@ export class Window extends EventEmitter {
 
     super();
 
+    var style = window.document.body.style;
+    style.margin = '0px';
+    style.padding = '0px';
+    style.overflow = 'hidden';
+
     ['keydown', 'keyup', 'keypress'].forEach(event => {
       window.addEventListener(event, data => {
         var key = data.key || data.which;
