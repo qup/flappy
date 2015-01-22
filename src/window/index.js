@@ -1,5 +1,7 @@
 import { EventEmitter } from 'events';
 
+var window = global.window;
+
 export class Window extends EventEmitter {
   constructor() {
     if (current) {
@@ -9,7 +11,7 @@ export class Window extends EventEmitter {
     super();
 
     ['keydown', 'keyup', 'keypress'].forEach(event => {
-      global.window.addEventListener(event, data => {
+      window.addEventListener(event, data => {
         var key = data.key || data.which;
         var scancode = data.location;
 
@@ -25,7 +27,7 @@ export class Window extends EventEmitter {
     });
 
     ['mousedown', 'mouseup', 'mousepress'].forEach(event => {
-      global.window.addEventListener(event, data => {
+      window.addEventListener(event, data => {
         var button = data.button;
         var x = data.clientX;
         var y = data.clientY;
@@ -41,32 +43,32 @@ export class Window extends EventEmitter {
     });
 
     ['touchstart', 'touchend', 'touchmove'].forEach(event => {
-      global.window.addEventListener(event, data => {
+      window.addEventListener(event, data => {
         this.emit(event);
       });
     });
 
     ['blur', 'focus', 'focusin', 'focusout'].forEach(event => {
-      global.window.addEventListener(event, data => {
+      window.addEventListener(event, data => {
         this.emit(event);
       });
     });
   }
 
   requestRedraw(callback) {
-    return global.window.requestAnimationFrame(callback);
+    return window.requestAnimationFrame(callback);
   }
 
   cancelRedraw(requestId) {
-    return global.window.cancelAnimationFrame(requestId);
+    return window.cancelAnimationFrame(requestId);
   }
 
   requestFullscreen() {
-    return global.window.requestFullscreen();
+    return window.requestFullscreen();
   }
 
   cancelFullscreen() {
-    return global.window.cancelFullscreen();
+    return window.cancelFullscreen();
   }
 
   get title() {
@@ -74,11 +76,11 @@ export class Window extends EventEmitter {
   }
 
   set title(value) {
-    global.window.document.title = value;
+    window.document.title = value;
   }
 
   get focused() {
-    return global.window.document.hasFocus;
+    return window.document.hasFocus;
   }
 }
 
