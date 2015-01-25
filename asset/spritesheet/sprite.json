@@ -1,35 +1,35 @@
 {
     "image": "image/sprite.png",
     "frames": [
-    {
-        "top": 0,
-        "left": 0,
-        "right": 32,
-        "bottom": 32
-    },
-    {
-        "top": 0,
-        "left": 32,
-        "right": 64,
-        "bottom": 32
-    },
-    {
-       "top": 0,
-       "left": 64,
-       "right": 96,
-       "bottom": 32
-    },
-    {
-       "top": 0,
-       "left": 96,
-       "right": 128,
-       "bottom": 32
-    }
+      {
+          "top": 0,
+          "left": 0,
+          "right": 25,
+          "bottom": 20
+      },
+      {
+          "top": 0,
+          "left": 25,
+          "right": 50,
+          "bottom": 20
+      },
+      {
+         "top": 0,
+         "left": 50,
+         "right": 75,
+         "bottom": 20
+      },
+      {
+         "top": 0,
+         "left": 75,
+         "right": 100,
+         "bottom": 20
+      }
     ],
 
     "animations": {
-       "idle": [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2],
-       "flap": [0, 1],
+       "idle": [0, 1, 2],
+       "flap": [0, 1, 2],
        "dead": [3]
     }
 }
