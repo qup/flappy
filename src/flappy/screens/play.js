@@ -4,6 +4,8 @@ import { Score } from './score';
 
 import entities from '../entities';
 import display from 'display';
+import tweens from 'tweens';
+import async from 'async';
 
 export class Play extends Screen {
   constructor(game) {
@@ -19,13 +21,17 @@ export class Play extends Screen {
     this.deathSound = this.game.assets['sound/death'];
     this.scoreSound = this.game.assets['sound/score'];
 
+    this.offsetX = 0;
+    this.offsetY = 0;
+    this.scoreTextScale = 1;
+
     this.on('keyDown', function (key) {
       this.world.bird.flap();
     });
 
     var game = this.game;
     this.on('blur', function (key) {
-      game.push(new Pause(this.game, game));
+      game.push(new Pause(this.game, this));
     });
 
     this.world.bird.on('flap', function() {
@@ -34,10 +40,21 @@ export class Play extends Screen {
 
     this.world.bird.on('die', function() {
       this.deathSound.play();
+
+      async.series([
+        async.apply(tweens.setTween, this, { offsetX: -10, offsetY: -10 }, 0, 'bounceInOut'),
+        async.apply(tweens.setTween, this, { offsetX: +10, offsetY: +10 }, 100, 'bounceInOut'),
+        async.apply(tweens.setTween, this, { offsetX: 0, offsetY: 0 }, 10, 'bounceInOut'),
+      ]);
     }.bind(this))
 
     this.world.on('score', function() {
       this.scoreSound.play();
+
+      async.series([
+        async.apply(tweens.setTween, this, { scoreTextScale: 2.5 }, 250, 'bounceIn'),
+        async.apply(tweens.setTween, this, { scoreTextScale: 1 }, 250, 'bounceIn'),
+      ]);
     }.bind(this));
 
     this.world.on('defeat', function() {
@@ -145,12 +162,12 @@ export class Play extends Screen {
   }
 
   drawOverlay(scale) {
-    display.drawText(`44px munro`, `${this.world.score}`, display.target.width / 2, 100, 'white', 'center');
+    display.drawText(`${this.scoreTextScale * 44}px munro`, `${this.world.score}`, display.target.width / 2, 100, 'white', 'center');
   }
 
   draw(time) {
-    var offsetX = -this.world.bird.x + (this.world.width / 4);
-    var offsetY = this.world.height;
+    var offsetX = -this.world.bird.x + (this.world.width / 4) + this.offsetX;
+    var offsetY = this.world.height + this.offsetY;
 
     var scaleX = display.target.width / this.world.width;
     var scaleY = display.target.height / this.world.height;
