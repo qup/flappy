@@ -43,6 +43,7 @@ export class Game {
   preload() {
     var that = this;
     var tasks = async.parallel({
+      'tilesheet/font': async.apply(assets.loadFont, 'font/munro.ttf'),
       'tilesheet/tiles': async.apply(assets.loadAtlas, 'tilesheet/tiles.json'),
       'spritesheet/sprite': async.apply(assets.loadAtlas, 'spritesheet/sprite.json'),
       'image/background': async.apply(assets.loadImage, 'image/background.png'),
