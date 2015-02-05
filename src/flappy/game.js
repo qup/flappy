@@ -46,6 +46,7 @@ export class Game {
       'tilesheet/tiles': async.apply(assets.loadAtlas, 'tilesheet/tiles.json'),
       'spritesheet/sprite': async.apply(assets.loadAtlas, 'spritesheet/sprite.json'),
       'image/background': async.apply(assets.loadImage, 'image/background.png'),
+      'image/title': async.apply(assets.loadImage, 'image/title.png'),
       'sound/flap': async.apply(assets.loadSound, 'sound/flap.wav'),
       'sound/death': async.apply(assets.loadSound, 'sound/death.wav'),
       'sound/score': async.apply(assets.loadSound, 'sound/score.wav'),
