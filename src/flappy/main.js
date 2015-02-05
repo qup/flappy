@@ -1,6 +1,7 @@
+import mantle from 'mantle';
 import flappy from './';
 
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('starting');
+mantle.on('load', function() {
   var game = new flappy.Game(document.body);
+  game.start(mantle);
 });

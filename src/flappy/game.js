@@ -1,22 +1,23 @@
 import screens from './screens';
-import window from 'window';
 import async from 'async';
 import assets from './assets';
 
 export class Game {
   constructor(element) {
     this._screens = new Array();
+  }
 
+  start(window, callback) {
     const events = [
-      'keydown',
-      'keyup',
-      'keypress',
-      'mousedown',
-      'mouseup',
-      'mousepress',
-      'touchstart',
-      'touchend',
-      'touchmove',
+      'keyDown',
+      'keyUp',
+      'keyPress',
+      'mouseDown',
+      'mouseUp',
+      'mousePress',
+      'touchStart',
+      'touchEnd',
+      'touchMove',
       'blur',
       'focus',
     ];
@@ -27,8 +28,13 @@ export class Game {
       });
     });
 
-    var tick = this.tick.bind(this);
-    window.requestRedraw(tick);
+    var self = this;
+    var tick = function tick() {
+      self.tick();
+      window.setRedraw(tick);
+    };
+
+    window.setRedraw(tick);
 
     this.assets = new Object();
     this.preload();
@@ -129,12 +135,6 @@ export class Game {
 
     this.step(frameTime);
     this.draw(frameTime);
-
-    if (window.focused) {
-      window.requestRedraw(this.tick.bind(this));
-    } else {
-      global.window.setTimeout(this.tick.bind(this), 500);
-    }
   }
 
   submitScore(key, value) {

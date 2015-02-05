@@ -18,12 +18,11 @@
   },
   "dependencies": {
     "async": "^0.9.0",
-    "howler": "^1.1.25"
+    "howler": "^1.1.25",
+    "mantle": "0.0.4"
   },
-
   "browser": {
-   "flappy": "./src/flappy/index.js",
-   "window": "./src/window/index.js",
-   "display": "./src/display/index.js"
+    "flappy": "./src/flappy/index.js",
+    "display": "./src/display/index.js"
   }
 }

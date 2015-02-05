@@ -7,10 +7,8 @@ export class Title extends Screen {
     super(game);
   }
 
-  keydown(key) {
-    if (key == 32) {
-      this.start();
-    }
+  keyDown(key) {
+    this.start();
   }
 
   start() {

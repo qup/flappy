@@ -18,7 +18,7 @@ export class Score extends Screen {
 
     this.elapsedTime = 0;
 
-    this.on('keydown', function (key) {
+    this.on('keyDown', function (key) {
       this.game.switch(new Title(this.game));
     });
   }

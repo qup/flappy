@@ -19,7 +19,7 @@ export class Play extends Screen {
     this.deathSound = this.game.assets['sound/death'];
     this.scoreSound = this.game.assets['sound/score'];
 
-    this.on('keydown', function (key) {
+    this.on('keyDown', function (key) {
       this.world.bird.flap();
     });
 
