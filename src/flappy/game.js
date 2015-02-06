@@ -3,7 +3,7 @@ import async from 'async';
 import assets from './assets';
 
 export class Game {
-  constructor(element) {
+  constructor() {
     this._screens = new Array();
   }
 
