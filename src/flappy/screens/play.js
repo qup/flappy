@@ -25,14 +25,7 @@ export class Play extends Screen {
     this.offsetY = 0;
     this.scoreTextScale = 1;
 
-    this.on('keyDown', function (key) {
-      this.world.bird.flap();
-    });
-
     var game = this.game;
-    this.on('blur', function (key) {
-      game.push(new Pause(this.game, this));
-    });
 
     this.world.bird.on('flap', function() {
       this.flapSound.play();
@@ -62,6 +55,18 @@ export class Play extends Screen {
     }.bind(this));
 
     this.world.bird.flap();
+  }
+
+  keyDown() {
+    this.world.bird.flap();
+  }
+
+  blur() {
+    this.pause();
+  }
+
+  pause() {
+    this.game.push(new Pause(this.game, this));
   }
 
   step(time) {
