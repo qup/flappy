@@ -19,13 +19,11 @@ export class Score extends Screen {
     console.info('Submitting score');
     this.game.submitScore('score', this.playScreen.score);
 
-
-
-    this.on('keyDown', function (key) {
-      this.game.switch(new Title(this.game));
-    });
-
     this.scoreOffsetY = 0;
+  }
+
+  keyDown() {
+    this.game.change(new Title(this.game));
   }
 
   activate() {

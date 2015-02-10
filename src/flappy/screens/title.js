@@ -24,7 +24,7 @@ export class Title extends Screen {
   }
 
   start() {
-    this.game.switch(new Play(this.game));
+    this.game.change(new Play(this.game));
   }
 
   draw(time) {

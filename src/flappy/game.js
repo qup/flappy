@@ -1,6 +1,8 @@
 import screens from './screens';
 import async from 'async';
 import assets from './assets';
+import mixin from 'mixin';
+import modes from 'modes';
 
 export class Game {
   constructor() {
@@ -24,7 +26,7 @@ export class Game {
 
     events.forEach((event) => {
       window.on(event, (...args) => {
-        this.delegate(event, args);
+        this.invoke(event, args);
       });
     });
 
@@ -61,72 +63,6 @@ export class Game {
     });
   }
 
-  push(screen) {
-    var stack = this._screens;
-
-    var current = stack[stack.length - 1];
-    if (current) {
-      current.deactivate();
-    }
-
-    screen.activate();
-    stack.push(screen);
-  }
-
-  pop() {
-    var stack = this._screens;
-
-    var current = stack.pop();
-    if (current) {
-      current.deactivate();
-    }
-
-    var previous = stack[stack.length - 1];
-    if (previous) {
-      previous.activate();
-    }
-
-    return current;
-  }
-
-  peek() {
-    var stack = this._screens;
-  }
-
-  switch(screen) {
-    var stack = this._screens;
-
-    while (stack.length) {
-      var current = stack[stack.length - 1];
-      current.deactivate();
-      stack.pop();
-    }
-
-    screen.activate();
-    stack.push(screen);
-  }
-
-  delegate(event, ...args) {
-    var stack = this._screens;
-    var current = stack[stack.length - 1];
-
-    if (current) {
-      if (current[event]) {
-        current[event](...args);
-      }
-
-      current.emit(event, ...args);
-    }
-  }
-
-  draw(time) {
-    this.delegate('draw', time);
-  }
-
-  step(time) {
-    this.delegate('step', time);
-  }
-
   tick(time) {
     if (time == undefined) {
       time = global.window.performance.now();
@@ -135,8 +71,8 @@ export class Game {
     var frameTime = (time - (this.time || time)) / 1000;
     this.time = time;
 
-    this.step(frameTime);
-    this.draw(frameTime);
+    this.invoke('step', frameTime);
+    this.invoke('draw', frameTime);
   }
 
   submitScore(key, value) {
@@ -148,3 +84,5 @@ export class Game {
     }
   }
 }
+
+mixin(Game, modes);
