@@ -16,7 +16,7 @@ export class World extends EventEmitter {
 
     this.terrain = new Terrain(columns, rows, size);
     this.terrainBorder = Math.floor((rows - 6) / 2);
-    this.terrain.fill(0, 0, columns, rows, -1);
+    this.terrain.fill(0, 0, columns, rows, - 1);
     this.terrain.fill(0, 0, columns, this.terrainBorder - 1, 2);
     this.terrain.fill(0, this.terrainBorder - 1, columns, this.terrainBorder, 1);
     this.generationIndex = 0;
