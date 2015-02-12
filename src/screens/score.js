@@ -20,6 +20,7 @@ export class Score extends Screen {
     this.game.submitScore('score', this.playScreen.score);
 
     this.scoreOffsetY = 0;
+    this.scoreOffsetX = 0;
   }
 
   keyDown() {
@@ -41,10 +42,15 @@ export class Score extends Screen {
   draw(time) {
     this.playScreen.draw(time);
 
-    display.drawText('munro', 64,'Game Over',
-      window.innerWidth / 2 - display.measureText('munro', 64, 'Game Over').width / 2,
-      100 + this.scoreOffsetY, [1, 1, 1, 1]
-    );
+    var tex = this.game.assets['texture/game-over'];
+    let viewport = [0, 0, window.innerWidth, window.innerHeight];
+
+    let width = tex.width;
+    let height = tex.height;
+    let x = this.scoreOffsetX + (viewport[2] / 2) - (width / 2);
+    let y = this.scoreOffsetY + 200;
+
+    display.drawImage(tex, x, y, width, height);
   }
 }
 
