@@ -22,7 +22,7 @@ export class Pause extends Screen {
     });
   }
 
-  focus() {
+  keyDown() {
     this.resume();
   }
 
