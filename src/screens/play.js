@@ -15,7 +15,7 @@ export class Play extends Screen {
 
     this.spriteSheet = this.game.assets['spritesheet/sprite'];
     this.tileSheet = this.game.assets['tilesheet/tiles'];
-    this.backgroundImage = this.game.assets['image/background'];
+    this.backgroundImage = this.game.assets['texture/background'];
 
     this.flapSound = this.game.assets['sound/flap'];
     this.deathSound = this.game.assets['sound/death'];
@@ -74,15 +74,12 @@ export class Play extends Screen {
   }
 
   drawBackground(scale, offsetX, offsetY) {
-    display.clear();
-
-    var count = Math.ceil(display.target.width / this.world.width);
+    var count = Math.ceil(window.innerWidth / this.world.width);
     for (var i = 0; i < count; i++) {
       display.drawImage(
         this.backgroundImage,
-        i * this.world.width, 0, this.world.width, this.world.height,
-        0, 0, this.backgroundImage.width, this.backgroundImage.height,
-        scale, scale, 0, 0
+          i * this.world.width * scale, 0, this.world.width * scale, this.world.height * scale,
+          0, 0, this.backgroundImage.width, this.backgroundImage.height
       );
     }
   }
@@ -92,12 +89,12 @@ export class Play extends Screen {
     var { rows, columns, data, size } = this.world.terrain;
 
     var startX = Math.floor(-offsetX / size);
-    var startY = Math.floor(-offsetY / size);
-    var endX = startX + Math.ceil(display.target.width / size);
-    var endY = startY + Math.ceil(display.target.height / size);
+    var startY = Math.ceil(-offsetY / size);
+    var endX = startX + Math.ceil(window.innerWidth / size);
+    var endY = startY + Math.ceil(window.innerHeight / size);
 
-    var srcWidth = atlas.image.width / atlas.columns;
-    var srcHeight = atlas.image.height / atlas.rows;
+    var srcWidth = atlas.texture.width / atlas.columns;
+    var srcHeight = atlas.texture.height / atlas.rows;
 
     for (var x = startX; x < endX; x++) {
       for (var y = startY; y < endY; y++) {
@@ -110,20 +107,26 @@ export class Play extends Screen {
           continue;
         }
 
-        var srcX = (index % (atlas.image.width / srcWidth)) * srcWidth;
-        var srcY = Math.floor(index / (atlas.image.width / srcWidth)) * srcHeight;
+        var srcX = (index % (atlas.texture.width / srcWidth)) * srcWidth;
+        var srcY = Math.floor(index / (atlas.texture.width / srcWidth)) * srcHeight;
 
-        display.drawImage(
-          atlas.image,
-          (x * size) + offsetX, (-y * size) + offsetY, size, size,
-          srcX, srcY, srcWidth, srcHeight,
-          scale, scale, size / 2, size / 2
-        );
+        var width = size * scale;
+        var height = size * scale;
+
+        var dx = (x * size) + offsetX;
+        var dy = (-y * size) + offsetY;
+
+        dx = (dx * scale) + (-width / 2);
+        dy = (dy * scale) + (-height / 2);
+
+        display.drawImage(atlas.texture, dx, dy, width, height, srcX, srcY, srcWidth, srcHeight);
       }
     }
   }
 
   drawPlayer(time, scale, offsetX, offsetY) {
+    var atlas = this.spriteSheet;
+
     var animationName = this.spriteAnimationName;
     if (this.world.bird.dead) {
       this.spriteAnimationName = 'dead';
@@ -151,36 +154,36 @@ export class Play extends Screen {
     var animation = this.spriteSheet.animations[this.spriteAnimationName];
     var index = animation[this.spriteAnimationFrame];
     var frame = this.spriteSheet.frames[index];
+    var height = (frame.bottom - frame.top) * scale;
+    var width = (frame.right - frame.left) * scale;
 
-    var height = frame.bottom - frame.top;
-    var width = frame.right - frame.left;
+    var x = (this.world.bird.x + offsetX) * scale - (width / 2);
+    var y = (-this.world.bird.y + offsetY) * scale - (height / 2);
 
-    var x = this.world.bird.x + offsetX;
-    var y = -this.world.bird.y + offsetY;
+    display.drawImage(atlas.texture, x, y, width, height, frame.left, frame.top, frame.right - frame.left, frame.bottom - frame.top);
+  }
 
-    display.drawImage(
-      this.spriteSheet.image,
-      x, y, width, height,
-      frame.left, frame.top, width, height,
-      scale, scale, width / 2, height / 2
+  drawScore(scale) {
+    display.drawText(
+      'munro', this.scoreTextScale * 44, `${this.world.score}`,
+      (window.innerWidth / 2) - (display.measureText('munro', this.scoreTextScale * 44, `${this.world.score}`).width / 2),
+      window.innerHeight / 10, [1, 1, 1, 1]
     );
   }
 
-  drawOverlay(scale) {
-    display.drawText(`${this.scoreTextScale * 44}px munro`, `${this.world.score}`, display.target.width / 2, 100, 'white', 'center');
-  }
-
   draw(time) {
+    display.clear([0, 0, 0, 1]);
+
     var offsetX = -this.world.bird.x + (this.world.width / 4) + this.offsetX;
     var offsetY = this.world.height + this.offsetY;
 
-    var scaleX = display.target.width / this.world.width;
-    var scaleY = display.target.height / this.world.height;
+    var scaleX = window.innerWidth / this.world.width;
+    var scaleY = window.innerHeight / this.world.height;
     var scale = Math.min(scaleX, scaleY);
 
     this.drawBackground(scale, offsetX, offsetY);
     this.drawTerrain(scale, offsetX, offsetY);
     this.drawPlayer(time, scale, offsetX, offsetY);
-    this.drawOverlay(scale);
+    this.drawScore(scale);
   }
 }

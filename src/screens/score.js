@@ -41,14 +41,10 @@ export class Score extends Screen {
   draw(time) {
     this.playScreen.draw(time);
 
-    display.reset();
-    display.drawText('64px munro', 'Game Over', display.target.width / 2, 100 + this.scoreOffsetY, 'white', 'center');
-
-    display.drawText('34px munro', 'Score', display.target.width / 2, 200 + this.scoreOffsetY, 'white', 'center');
-    display.drawText('34px munro', `${this.playScreen.score}`, display.target.width / 2, 250 + this.scoreOffsetY, 'white', 'center');
-
-    display.drawText('34px munro', 'Best', display.target.width / 2, 300 + this.scoreOffsetY, 'white', 'center');
-    display.drawText('34px munro', `${this.highScore}`, display.target.width / 2, 350 + this.scoreOffsetY, 'white', 'center');
+    display.drawText('munro', 64,'Game Over',
+      window.innerWidth / 2 - display.measureText('munro', 64, 'Game Over').width / 2,
+      100 + this.scoreOffsetY, [1, 1, 1, 1]
+    );
   }
 }
 

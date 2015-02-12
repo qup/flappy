@@ -23,10 +23,11 @@
     "mixin": "^0.2.0",
     "modes": "0.0.2",
     "tweens": "0.0.1"
+    "display_": "latest",
   },
   "browser": {
     "flappy": "./src/flappy/index.js",
-    "display": "./src/display/index.js"
+    "display": "display_"
   },
   "devDependencies": {
     "6to5ify": "^3.1.0"

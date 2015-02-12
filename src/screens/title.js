@@ -8,6 +8,7 @@ export class Title extends Screen {
   constructor(game) {
     super(game);
 
+    this.titleOffsetX = 0;
     this.titleOffsetY = 0;
   }
 
@@ -28,20 +29,16 @@ export class Title extends Screen {
   }
 
   draw(time) {
-    var background = this.game.assets['image/background'];
-    display.drawImage(
-      background,
-      0, 0, display.target.width, display.target.height,
-      0, 0, background.width, background.height,
-      1, 1, 0, 0
-    );
+    display.clear([0.5, 0.5, 0.5, 1.0]);
 
-    var title = this.game.assets['image/title'];
-    display.drawImage(
-      title,
-      display.target.width / 2, this.titleOffsetY + display.target.height / 4, title.width, title.height,
-      0, 0, title.width, title.height,
-      1, 1, title.width / 2, title.height / 2
-    );
+    var tex = this.game.assets['texture/title'];
+    let viewport = [0, 0, window.innerWidth, window.innerHeight];
+
+    let width = tex.width;
+    let height = tex.height;
+    let x = this.titleOffsetX + (viewport[2] / 2) - (width / 2);
+
+    let y = this.titleOffsetY + 200;
+    display.drawImage(tex, x, y, width, height);
   }
 }

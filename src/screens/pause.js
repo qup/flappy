@@ -36,8 +36,10 @@ export class Pause extends Screen {
   draw(time) {
     this.playScreen.draw(time);
 
-    display.reset();
-
-    display.drawText(`${this.textScale * 90}px munro`, 'Pause', display.target.width / 2, display.target.height / 2 - 100, 'white', 'center');
+    display.drawText(
+      'munro', this.textScale * 90, 'Pause',
+      (window.innerWidth / 2) - (display.measureText('munro', this.textScale * 90, 'Pause').width / 2),
+      window.innerHeight / 2 - 100, [1, 1, 1, 1]
+    );
   }
 }

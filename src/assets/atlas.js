@@ -1,5 +1,5 @@
 import { loadJson } from './json';
-import { loadImage } from './image';
+import { loadTexture } from './texture';
 
 export function loadAtlas(path, callback) {
   loadJson(path, function(error, atlas) {
@@ -7,12 +7,12 @@ export function loadAtlas(path, callback) {
       return callback(error);
     }
 
-    loadImage(atlas.image, function(error, image) {
+    loadTexture(atlas.image, function(error, texture) {
       if (error) {
         return callback(error);
       }
 
-      atlas.image = image;
+      atlas.texture = texture;
       callback(null, atlas);
     });
   });

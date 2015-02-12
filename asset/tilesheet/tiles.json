@@ -1,5 +1,5 @@
 {
-   "image": "image/tiles.png",
+   "image": "texture/tiles.png",
    "columns": 4,
    "rows": 4,
    "margin": 0,
