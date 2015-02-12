@@ -10,13 +10,13 @@ export class Pause extends Screen {
     this.playScreen = playScreen;
     this.elapsedTime = 0;
 
-    this.textScale = 1;
+    this.titleScale = 1;
   }
 
   resume() {
     async.series([
-      async.apply(tweens.setTween, this, { textScale: 1 }, 0, 'linear'),
-      async.apply(tweens.setTween, this, { textScale: 0 }, 150, 'bounceInOut'),
+      async.apply(tweens.setTween, this, { titleScale: 1 }, 0, 'linear'),
+      async.apply(tweens.setTween, this, { titleScale: 0 }, 150, 'bounceInOut'),
     ], (error) => {
       this.game.pop();
     });
@@ -28,18 +28,23 @@ export class Pause extends Screen {
 
   activate() {
     async.series([
-      async.apply(tweens.setTween, this, { textScale: 0 }, 0, 'linear'),
-      async.apply(tweens.setTween, this, { textScale: 1 }, 150, 'bounceInOut'),
+      async.apply(tweens.setTween, this, { titleScale: 0 }, 0, 'linear'),
+      async.apply(tweens.setTween, this, { titleScale: 1 }, 150, 'bounceInOut'),
     ]);
   }
 
   draw(time) {
     this.playScreen.draw(time);
 
-    display.drawText(
-      'munro', this.textScale * 90, 'Pause',
-      (window.innerWidth / 2) - (display.measureText('munro', this.textScale * 90, 'Pause').width / 2),
-      window.innerHeight / 2 - 100, [1, 1, 1, 1]
-    );
+    var tex = this.game.assets['texture/pause'];
+    let viewport = [0, 0, window.innerWidth, window.innerHeight];
+
+    let width = tex.width * this.titleScale;
+    let height = tex.height * this.titleScale;
+
+    let x = (viewport[2] / 2) - (width / 2);
+    let y = 200 - (height / 2);
+
+    display.drawImage(tex, x, y, width, height);
   }
 }

@@ -51,6 +51,7 @@ export class Game {
       'texture/background': async.apply(assets.loadTexture, 'texture/background.png'),
       'texture/title': async.apply(assets.loadTexture, 'texture/title.png'),
       'texture/game-over': async.apply(assets.loadTexture, 'texture/game-over.png'),
+      'texture/pause': async.apply(assets.loadTexture, 'texture/pause.png'),
       'sound/flap': async.apply(assets.loadSound, 'sound/flap.wav'),
       'sound/death': async.apply(assets.loadSound, 'sound/death.wav'),
       'sound/score': async.apply(assets.loadSound, 'sound/score.wav'),
