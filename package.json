@@ -22,8 +22,8 @@
     "mantle": "0.0.4",
     "mixin": "^0.2.0",
     "modes": "0.0.2",
-    "tweens": "0.0.1"
-    "display_": "latest",
+    "tweens": "0.0.1",
+    "display_": "latest"
   },
   "browser": {
     "flappy": "./src/flappy/index.js",
