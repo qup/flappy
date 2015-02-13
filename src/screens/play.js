@@ -114,14 +114,15 @@ export class Play extends Screen {
         var srcX = (index % (atlas.texture.width / srcWidth)) * srcWidth;
         var srcY = Math.floor(index / (atlas.texture.width / srcWidth)) * srcHeight;
 
-        var width = size * scale;
-        var height = size * scale;
+        var width = Math.floor(size * scale);
+        var height = Math.floor(size * scale);
 
         var dx = (x * size) + offsetX;
         var dy = (-y * size) + offsetY;
 
-        dx = (dx * scale) + (-width / 2);
-        dy = (dy * scale) + (-height / 2);
+        dx = Math.floor((dx * scale) + (-width / 2));
+        dy = Math.floor((dy * scale) + (-height / 2));
+
 
         display.drawImage(atlas.texture, dx, dy, width, height, srcX, srcY, srcWidth, srcHeight);
       }
