@@ -57,6 +57,10 @@ export class Play extends Screen {
     this.world.bird.flap();
   }
 
+  touchStart() {
+    this.world.bird.flap();
+  }
+
   keyDown() {
     this.world.bird.flap();
   }

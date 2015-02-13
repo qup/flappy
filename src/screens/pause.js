@@ -22,6 +22,10 @@ export class Pause extends Screen {
     });
   }
 
+  touchStart() {
+    this.resume();
+  }
+
   keyDown() {
     this.resume();
   }

@@ -12,6 +12,10 @@ export class Title extends Screen {
     this.titleOffsetY = 0;
   }
 
+  touchStart(touches) {
+    this.start();
+  }
+
   keyDown(key) {
     this.start();
   }
